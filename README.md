@@ -17,6 +17,15 @@ Wayne's agent skills. Starts from [pstack](https://github.com/cursor/plugins/tre
 | `scripts/link-skills.sh` | Symlinks `dist/claude-code` into `~/.claude/skills` and `~/.claude/agents`. `--codex` links `dist/codex` into `~/.agents/skills` and `~/.codex/agents`. Builds first if `dist/` is missing. Never replaces a non-symlink. |
 | `scripts/sync-upstream.sh` | Pulls the latest pstack, writes `upstream/last-sync.diff`, updates the lock. |
 
+## Working with wayne-mode (the human side)
+
+Habits that made the difference in practice:
+
+- **Say who the result is for at the start.** A demo for yourself can be bare; a demo for others needs a product-level UI from the first slice. Changing this midway means redoing the UI.
+- **Ask when you don't understand.** Approving a concept you can't explain yet ("I'm not getting it, but A is fine") is the most expensive moment in a session. Ask for something you can see instead.
+- **Give the working rules up front.** Language, where context lives, which mode: one message at the start beats switching rules mid-session.
+- **Run `/create-verification-skill` when wayne-mode suggests it.** The agent cannot invoke it for you.
+
 ## Working on it
 
 ```bash
