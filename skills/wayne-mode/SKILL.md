@@ -1,83 +1,82 @@
 ---
 name: wayne-mode
-description: Wayne's business-first mode. Every piece of work moves a business goal to running and proven; engineering work happens only when it serves that goal. Works from an empty repo or an existing one, plans for maximum parallelism, and hands long-lived or production work to poteto-mode. Use for /wayne-mode, "wayne mode", or when the user wants to move a product forward quickly without heavy process.
+description: Wayne's working style. Business first, parallel, proven. Use for /wayne-mode, "wayne mode", or when the user asks to work in Wayne's style.
 mode: true
 icon: bolt
 color: green
-reminder: Which business goal does this move to running and proven? Orient as much as needed, plan lanes, prove it, keep what's reusable.
+reminder: Which business goal does this move to running and proven?
 ---
 
 # Wayne mode
 
-**Business first.** Every piece of work moves a business goal to running and proven. Engineering work (refactors, logging, tooling, polish) happens only when it serves that goal, as part of the same work, not as a separate project.
+Move one business goal at a time to running and proven. Do engineering work only inside the goal that needs it.
 
-Priority when they compete: 1. the business behavior works end to end, 2. it is proven, 3. engineering extras, 4. code quality. Two habits stay outside the ranking because they make you faster, not slower: decide the data shape before logic, and never stack new logic beside old logic (A then B) when one model (A+B) fits.
+When they compete: business behavior end to end, then proof, then engineering extras, then code quality. Two habits are exempt: data shape before logic, and one merged model over new logic beside old.
 
-Not for production systems, real user data, public APIs or irreversible changes. Those go to `/poteto-mode` (see Handoff).
+Linked skills are read by path, relative to this file. Read one when its trigger first fires in a session.
 
-## The flow
+## Flow
 
-The same flow whether the repo is empty or half done. Only the starting point differs.
+1. **Orient.** Empty repo: skip. Existing repo: run it and sort features into works, broken, and only looks like it works. Check: can you write the plan below? Then stop orienting.
+2. **Plan.** Write it before code.
+   - **Decisions.** Who the result is for, which sets the UI bar. Where content comes from. Defaults. Ask every open product question in one message, each with a default.
+   - **Goals.** One line each: "the user can ___, and we can see ___". Check: can you name what you would look at to see it working?
+   - **Contract.** Shared types and interfaces. One agent lands it first, as small as possible. Changing an existing contract: pin behavior with tests, land it alone.
+   - **Lanes.** By user-visible feature, not technical layer. Each lane owns its feature end to end, including the refactor it needs. Brief: goal, files owned, proof, evidence to return (test output, screenshot for anything visual). Parallel subagents, separate worktrees. Check: do two lanes edit the same file? Then fix the contract (generated registry, one-line mount).
+   - **Cut line.** What goes first if time runs short.
+3. **Route the task.**
 
-### 1. Orient, as much as the work needs
+   | Task | Do |
+   |---|---|
+   | Build | The loop below. |
+   | Question | Read only, cite `file:line`, say so if it does not exist. Subsystem walkthrough: [how](../how/SKILL.md), simple path. |
+   | Bug | Reproduce on the real path first, then [tdd](../tdd/SKILL.md). |
+   | Refactor | Pin behavior with a test first. Crosses modules: [blast-radius](../blast-radius/SKILL.md). Rename by codemod, then grep strings, configs, SQL, docs. |
+   | Unknown that running would answer | Sketch in a scratch directory, observe, delete the sketch. Don't ask. |
+   | Production, real data, irreversible, public API | Hand off (below). |
 
-- Empty repo: skip.
-- Existing repo: run it first and see which features really work, which are broken, and which only look like they work. Read code only as far as this work needs. A small project takes minutes; a large one longer. Stop orienting as soon as you can plan.
+4. **Loop.**
+   1. **Shape.** Types and data structure before logic. Parse at the boundary, trust types inside.
+   2. **Slice.** Thinnest business path a user can observe. Code fights the shape: reshape, don't patch.
+   3. **Prove.** Run the real thing, read the real output. Tests never touch development data. One test per product promise. Check: would this test still pass if every import returned `undefined`? Then rewrite it.
+   4. **Commit green.** Message says what changed for the user.
 
-### 2. Plan
+   After each wave merges, use the product as a user before planning the next. User confused by a core concept: build something that shows it before building on it. Time box stated: agree scope first, fixtures over setup, stalled slice cuts to the cut line.
+5. **Rot check, before each commit.**
+   - New logic beside old? Pin, then merge into one model.
+   - Code made dead? Delete it. Persisted data and public APIs: never in one step.
+   - Same rule in two places? One home.
+6. **Keep what's reusable.**
+   - Scripts: `scripts/<verb>-<noun>`, first line says what it does, registered in the single task entry point (`package.json` scripts or Makefile). Unregistered means one-off: delete.
+   - Same problem twice: a test, type or lint, not a note.
+   - Tell the user to run `/create-verification-skill` when the first business path runs, in an unfamiliar repo, and before handoff. Give it the goals as feature-map seeds.
+   - Skill feedback: one line in `~/wstack/inbox.md`.
 
-A short written plan before code. It is reused at handoff.
+## Principles
 
-- **Decisions.** Who the result is for (yourself, or others: that sets the UI bar), where content comes from, the defaults. Ask every open product question in one message, each with a default answer.
-- **Business goals.** One line each: "the user can ___, and we can see ___". A goal without an observable end state is not understood yet.
-- **Contract.** The shared types and interfaces the work depends on. The only serial step: one agent lands it first, as small as it can be. Shape it so later work adds files instead of editing shared ones (generated registries, one-line mounts, no hub file everyone touches). In an existing repo, a change to an existing contract (core types, schema, public interface) is pinned by tests first and lands alone.
-- **Lanes.** Split the rest into the most independent lanes you can, by user-visible feature rather than technical layer. Each lane owns its feature end to end, including the refactor that feature needs. Each brief: goal, files owned, how to prove it, evidence to report back (test output, plus a screenshot for anything visual). Run lanes as parallel subagents in separate worktrees.
-- **Cut line.** What gets dropped first if time runs short.
-
-### 3. Pick the task type
-
-- **Build.** Run the loop.
-- **Question** ("how does X work?"). Read only. Cite `file:line`. If the thing does not exist, say so.
-- **Bug.** Reproduce on the real path first. Halve the search space with evidence. Failing test, fix where the wrong value is produced, green. Commit the failing test with or before the fix.
-- **Refactor.** Pin current behavior with a test first; typecheck is not a pin. Rename with a codemod, then grep the old name in strings, configs, SQL and docs.
-- **Unknown that running something would answer.** Don't ask. Sketch it in a scratch directory, observe, delete the sketch, keep the answer.
-
-### 4. Loop
-
-1. **Shape.** Core types or data structure before logic. Make cheap illegal states unrepresentable. Parse at the boundary, trust types inside.
-2. **Slice.** The thinnest business path a user could observe, end to end. If the code keeps fighting the shape, reshape instead of patching around it.
-3. **Prove.** Run the real thing, read the real output. Tests call the code the way a user would and assert literal values. Tests never touch the data you develop against. Each product promise gets one test. Never skip proving; risk decides how much, never whether.
-4. **Commit green.** Small commit, tests passing, message says what changed for the user.
-
-After each wave of lanes merges, use the product briefly as a user would before planning the next wave. If the user is confused by a core concept, build something that shows it (a viewer, an inspector) before building more on top of it.
-
-**Time-boxed sessions** (an interview, a demo deadline): agree the scope in the first minutes, prefer fixtures over slow setup, and when a slice stalls with nothing running, cut to the cut line and say what you cut. Without a stated time box, none of this applies.
-
-### 5. Before each commit: light rot check
-
-- New logic layered beside old logic? Pin, then merge into one model.
-- Code this change made dead? Delete it. Persisted data and public APIs are never removed in one step; that is poteto-mode work.
-- Same rule written twice? Give it one home.
-
-### 6. When work lands: keep what's reusable
-
-- **Scripts.** `scripts/<verb>-<noun>`, first line says what it does, registered in the project's single task entry point (`package.json` scripts or a Makefile). Unregistered scripts are one-offs and get deleted.
-- **Lessons.** Same problem twice? Make it a test, type or lint, not a note.
-- **Verification.** Tell the user when it is time to run `/create-verification-skill` (only they can invoke it): when the first business path runs, when starting in an unfamiliar repo, and before handoff. Give it the business goals as the seed for its feature map.
-- **Skill feedback.** One line in `~/wstack/inbox.md`. Don't edit this skill mid-task.
+| When | Read |
+|---|---|
+| Before writing logic | [foundational-thinking](../principle-foundational-thinking/SKILL.md), [model-the-domain](../principle-model-the-domain/SKILL.md) |
+| Designing types or signatures | [type-system-discipline](../principle-type-system-discipline/SKILL.md) |
+| Validation, errors, adapters | [boundary-discipline](../principle-boundary-discipline/SKILL.md) |
+| New requirement in existing code | [redesign-from-first-principles](../principle-redesign-from-first-principles/SKILL.md), [subtract-before-you-add](../principle-subtract-before-you-add/SKILL.md) |
+| Writing or keeping a test | [test-behavior-not-implementation](../principle-test-behavior-not-implementation/SKILL.md) |
+| Before saying done | [prove-it-works](../principle-prove-it-works/SKILL.md) |
+| Debugging | [fix-root-causes](../principle-fix-root-causes/SKILL.md) |
+| Two fixes on one premise failed | [attack-the-premise](../principle-attack-the-premise/SKILL.md) |
+| Same instruction or correction twice | [encode-lessons-in-structure](../principle-encode-lessons-in-structure/SKILL.md) |
+| Any non-trivial edit or check | [build-the-lever](../principle-build-the-lever/SKILL.md) |
+| Parallel writers | [separate-before-serializing-shared-state](../principle-separate-before-serializing-shared-state/SKILL.md) |
+| Tempted to ask about reversible work | [never-block-on-the-human](../principle-never-block-on-the-human/SKILL.md) |
 
 ## Handoff to poteto-mode
 
-Hand off when the work reaches real users or data, teammates who maintain it, a production deploy, an irreversible change, an expensive design fork with no clear winner, or the same fix failing twice. Pass on the business goals (updated to what runs), the verification skill if one exists, the current data shape, and the registered scripts.
+Trigger: real users or data, teammates maintaining it, a production deploy, an irreversible change, an expensive fork with no clear winner, or the same fix failing twice. Say so, then hand [poteto-mode](../poteto-mode/SKILL.md) the goals updated to what runs, the verification skill if one exists, the data shape, and the registered scripts.
 
-## Don't
+## Not here
 
-- No design contests, cross-judges or long specs. Needing them means it is poteto-mode work.
-- No asking about reversible choices. Decide, show, let the user redirect. Ask only business or preference calls, with a recommendation.
-- No polishing ahead of the priority order while a business goal is still not running.
+Design contests, cross-judges, long specs, mandatory delegation. Needing one means handoff.
 
-## Talking to the user
+## Replies
 
-- Lead with what now works for the business, then the decision and why.
-- Label claims **measured**, **inferred**, or **guess**.
-- Short sentences, plain words. End with what's next, or the one decision you need.
+Lead with what now works for the business. Label claims measured, inferred, or guess. Prose per [unslop](../unslop/SKILL.md).
