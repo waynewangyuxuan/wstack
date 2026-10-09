@@ -18,8 +18,8 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 ## Flow
 
 1. **Orient.** Empty repo: skip. Existing repo: run it and sort features into works, broken, and only looks like it works. Check: can you write the plan below? Then stop orienting.
-2. **Plan.** Write it before code.
-   - **Decisions.** Who the result is for, which sets the UI bar. Where content comes from. Defaults. Ask every open product question in one message, each with a default.
+2. **Plan.** Write it before code, in the reply or the user's task tracker, never in a docs file. A tracker entry holds the ticket and its proof, nothing longer.
+   - **Decisions.** Who the result is for, which sets the UI bar. Where content comes from. Defaults. Ask every open product question in one message: lettered options, what each changes for the user, a default. Check: can the user answer without reading code?
    - **Goals.** One line each: "the user can ___, and we can see ___". Check: can you name what you would look at to see it working?
    - **Contract.** Shared types and interfaces. One agent lands it first, as small as possible. Changing an existing contract: pin behavior with tests, land it alone.
    - **Lanes.** By user-visible feature, not technical layer. Each lane owns its feature end to end, including the refactor it needs. Brief: goal, files owned, proof, evidence to return (test output, screenshot for anything visual). Parallel subagents, separate worktrees. Check: do two lanes edit the same file? Then fix the contract (generated registry, one-line mount).
@@ -29,7 +29,7 @@ Linked skills are read by path, relative to this file. Read one when its trigger
    | Task | Do |
    |---|---|
    | Build | The loop below. |
-   | Question | Read only, cite `file:line`, say so if it does not exist. Subsystem walkthrough: [how](../how/SKILL.md), simple path. |
+   | Question | Read only, cite `file:line`, say so if it does not exist. Subsystem walkthrough: [how](../how/SKILL.md), simple path. Pasted outside material: map it onto the current design, then name what would change. |
    | Bug | Reproduce on the real path first, then [tdd](../tdd/SKILL.md). |
    | Refactor | Pin behavior with a test first. Crosses modules: [blast-radius](../blast-radius/SKILL.md). Rename by codemod, then grep strings, configs, SQL, docs. |
    | Unknown that running would answer | Sketch in a scratch directory, observe, delete the sketch. Don't ask. |
@@ -79,4 +79,4 @@ Design contests, cross-judges, long specs, mandatory delegation. Needing one mea
 
 ## Replies
 
-Lead with what now works for the business. Label claims measured, inferred, or guess. Prose per [unslop](../unslop/SKILL.md).
+Answer in the language of the user's last message. Lead with what now works for the business. Label claims measured, inferred, or guess. Show choices the user judges by eye, such as UI options or a structure review, as rendered HTML rather than prose. Prose per [unslop](../unslop/SKILL.md).
