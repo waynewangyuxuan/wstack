@@ -7,7 +7,8 @@ Wayne's agent skills. Starts from [pstack](https://github.com/cursor/plugins/tre
 | Path | What |
 |---|---|
 | `skills/` | Our skills. Edit these. |
-| `skills/wayne-mode/` | The entry point: gears (Sprint, Steady, Serious), the Shape, Slice, Prove, Commit loop, and the anti-rot rules. |
+| `skills/wayne-mode/` | Fast mode for getting a business running: entry plan with parallel lanes, task types, the Ground-Shape-Slice-Prove-Commit loop, light rot check, keep-what's-reusable, handoff to poteto-mode. |
+| `inbox.md` | One-line observations about our skills, batched into edits later. |
 | `upstream/pstack/` | Read-only snapshot of pstack (MIT, Lauren Tan). Cursor-native. Never edited. |
 | `upstream/pstack.lock` | The upstream commit the snapshot came from. |
 | `harness/` | Build rules per harness: substitutions, anchored patches, whole-file rewrites, agent conversion, forbidden terms. `shared.mjs` holds what every non-Cursor build shares. |
@@ -27,4 +28,4 @@ Links point into `dist/`, so rebuild after editing a skill. Each harness build r
 
 When pstack moves: run `./scripts/sync-upstream.sh`, then `node scripts/build.mjs`. A failure names the file, the line, and the rule whose anchor or pinned paragraph drifted, or the Cursor term that leaked through. Fix the rule in `harness/`, read `upstream/last-sync.diff`, port the ideas worth keeping into `skills/`, and commit the snapshot, lock, rules and our edits together.
 
-Rule of thumb for porting: take an idea only if it earns its weight in the Sprint gear, or belongs to Steady. Anything that only pays off in production rigor stays in pstack, and wayne-mode's Serious gear hands off to `/poteto-mode`.
+Split of roles: wayne-mode gets a business running and confirms its goals (bootstrap in about an hour, one-hour ticket sessions). poteto-mode hardens what graduates: verification skill from wayne's goal list, engineering refactors, production work. Port an idea into wayne-mode only if it pays for itself inside a one-hour session.

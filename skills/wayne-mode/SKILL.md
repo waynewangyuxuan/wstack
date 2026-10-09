@@ -1,82 +1,85 @@
 ---
 name: wayne-mode
-description: Wayne's light engineering mode. Move fast while keeping every step checkable and the codebase from rotting. A lightweight distillation of poteto-mode for live coding, prototypes and normal feature work. Use for /wayne-mode, "wayne mode", or when the user wants to build quickly without heavy process.
+description: Wayne's fast mode for getting a business up and running. Plans for maximum parallelism, builds the business logic first, proves it runs, and leaves a confirmed list of business goals that poteto-mode can harden later. For bootstrapping a project in about an hour and for one-hour ticket sessions where refactoring is part of the ticket. Use for /wayne-mode, "wayne mode", or when the user wants to build quickly without heavy process.
 mode: true
 icon: bolt
 color: green
-reminder: Building something? Pick a gear, shape the data, ship a thin slice, prove it ran, commit green.
+reminder: New task? Plan the goals and parallel lanes, land the contract, build the business path, prove it ran, keep what's reusable.
 ---
 
 # Wayne mode
 
-Two goals, in this order of attention:
+**Purpose.** Get the business running and find out, by running it, what the business logic really needs to do. Engineering quality matters, but only after that.
 
-1. **Checkable progress at the right dose.** Every step ends in something you ran and saw. No step is checked more than its risk deserves.
-2. **No rot.** Each change leaves the codebase as if the new requirement had been there from day one. Rules live in types, tests and lints, not in prose.
+**Two targets.**
 
-Speed comes from small verified slices, not from skipping verification. Process overhead is the enemy; so is unverified code.
+- **Bootstrap session:** from nothing to the described business running end to end in about one hour.
+- **Ticket session:** about one hour per ticket, delivering the business change and the refactor it needs together. The refactor is part of the ticket, not a follow-up.
 
-## Pick a gear first
+**Priority order.** 1. The business behavior works end to end. 2. It runs and is proven. 3. Engineering extras (logging, config, error polish). 4. Code quality. Two habits are exempt from the ranking because they make you faster inside the hour: decide the data shape before logic, and never stack new logic beside old logic (A then B) when one model (A+B) fits.
 
-State the gear in one line at the start of a task. Default is **Sprint**.
+**Not for.** Long-lived team codebases, production systems, real user data, public APIs, irreversible changes. Those graduate to `/poteto-mode` (see Handoff).
 
-| Gear | When | Design | Verification | Delegation |
-|---|---|---|---|---|
-| **Sprint** | Live coding, demos, prototypes, greenfield | Name the data shape, then code. No sketch docs. | Run it. One behavior test per behavior that matters. | Only for truly independent chunks. |
-| **Steady** | Feature work in a codebase others maintain | Shape + a 10-minute 2-option comparison when the fork is real | Behavior tests, typecheck, run the real path end to end | Parallel worktrees after the shared contract lands |
-| **Serious** | Production data, migrations, irreversible or security-sensitive work | Hand off to `/poteto-mode`. Its full process is worth it here. | | |
+## 1. Plan at the entry (5 minutes, every session)
 
-Escalate a gear when you hit: an irreversible action, a design fork that is expensive to undo with no clear winner, or the same fix failing twice. De-escalate when the user says move fast.
+Write a short plan before any code. It is also the handoff artifact later.
 
-## The loop
+- **Business goals.** One line each, in the form "the user can ___, and we can see ___". Each needs an observable end state. If a goal has none, it is not understood yet; ask, with a default answer attached.
+- **The contract.** The shared types and interfaces every lane depends on. This is the only serial part. Land it first, as small as it can be.
+- **Parallel lanes.** Split everything after the contract into the most independent lanes you can (by folder, page, package, block). Each lane: goal, files it owns, how to prove it. Run lanes as parallel subagents in separate worktrees, or sequentially if there is only one.
+- **Cut line.** What gets dropped first if time runs out.
 
-Repeat until done. Each pass should take minutes, not hours.
+## 2. Pick the task type
 
-1. **Shape.** Write the core types or data structure before logic. Ask "what states must never exist?" and make the cheap ones unrepresentable (discriminated unions, required fields, non-empty arrays, branded ids). Stop when the main access paths read naturally. Do not chase type precision nothing depends on.
-2. **Slice.** Build the thinnest end-to-end path that a user could observe. Real input to real output beats a complete layer nobody calls yet.
-3. **Prove.** Run the actual thing: the test, the server, the query, the page. Read the real output. "It compiles" is not proof. A test must call the code the way a user would and assert a literal value. If it would still pass with every import returning `undefined`, delete or fix it.
-4. **Commit green.** Small commit, typecheck and tests passing, message says what changed for the user.
+- **Build.** Run the loop.
+- **Question** ("how does X work?"). Read only, no code. Cite `file:line`. If the thing asked about does not exist, say so.
+- **Bug.** Reproduce on the real path first. Narrow the cause by halving the search space with evidence. Write the failing test, fix where the wrong value is produced, see it go green. Commit the failing test with or before the fix.
+- **Refactor** (also when part of a ticket). Pin the current behavior with a test first; typecheck is not a pin. Rename with a codemod or IDE rename, then grep the old name in strings, configs, SQL and docs.
+- **Unknown that running something would answer.** Don't ask the human. Sketch it in a scratch directory, observe, delete the sketch, keep the answer.
 
-Before each commit, take a 60-second rot check over the diff:
+## 3. The loop
 
-- Did I add logic **next to** old logic (A then B) instead of reshaping it into one model (A+B)? Reshape.
-- Dead code, stale stubs, compatibility shims nobody needs? Delete them. Migrate callers and remove the old API in the same change.
-- Same rule or shape written in two places? Give it one home and derive the rest.
-- Validation deep inside business logic? Move it to the boundary (input, DB, network, config) and trust types inside.
-- A new `if` branch that every future feature will have to extend? Replace it with a table, registry or union.
-- Comments that explain *what*? Rename or restructure instead. Keep only non-obvious *why*.
+Minutes per pass, not hours.
 
-## Anti-rot rules
+1. **Ground.** In existing code, read what the change touches first.
+2. **Shape.** Core types or data structure before logic. Make the cheap illegal states unrepresentable. Parse at the boundary, trust types inside. Stop once the main access paths read naturally.
+3. **Slice.** The thinnest business path a user could observe, end to end. If the code keeps fighting the shape, reshape instead of patching around it.
+4. **Prove.** Run the real thing, read the real output. A test calls the code the way a user would and asserts a literal value. Never skip this; risk decides how much you check, never whether.
+5. **Commit green.** Small commit, tests passing, message says what changed for the user.
 
-The short form of the principles that matter most. Apply them while writing, not as a later pass.
+**Clock rules.** Spend 2 minutes on scope. Prefer a fixture over slow setup. If a slice passes 15 minutes with nothing running, cut scope to the cut line and say what you cut.
 
-- **Data structures first.** Get the shape right and the code becomes obvious. Structure keeps future options open; code stays simple.
-- **Model the domain.** Domain knowledge lives in one structure (state machine, table, registry, typed model), not scattered conditionals or booleans that must stay in sync.
-- **Boundaries guard, the core trusts.** Parse external data into types at the edge. Business logic is pure functions.
-- **Redesign, don't bolt on.** A new requirement reshapes the design as if it had been known on day one. No historical layers.
-- **Subtract before adding.** Remove what the change makes obsolete first, then build on the simpler base.
-- **Encode lessons in structure.** When a rule is worth repeating, make it a type, test, lint or script. Text instructions rot; checks do not.
-- **Build the lever for repetition.** If the same edit or check repeats more than a few times, write the script or generator and run that.
-- **Attack the premise.** Two fixes on one assumption both failed? Stop fixing and question the assumption.
-- **Smallest change that solves it.** Fewer layers, flat call chains, no abstraction without a branch or duplication it deletes.
+## 4. Light rot check (before each commit)
 
-## Parallelism
+- New logic layered beside old logic? Pin, then merge into one model.
+- Code this change made dead? Delete it. (Persisted data and public APIs are not deleted in one step; that is poteto-mode work.)
+- Same rule written twice? Give it one home.
 
-- Fan out only after the shared contract (types, interfaces) has landed. Agents coding against an unlanded contract guess differently and the merge eats the time saved.
-- One agent per independent unit (a block folder, a package, a page), each in its own worktree and branch, so nobody writes the same file.
-- Each agent gets a short brief: goal, files it owns, the data shape to use, and how to prove it works. Not a long spec.
-- You own the result. Read the diff and rerun the proof yourself before merging. A subagent's "done" is a claim, not evidence.
+Everything else (logging depth, naming polish, abstractions) waits for its priority slot or for poteto-mode.
+
+## 5. Keep what's reusable (1 minute, when a task lands)
+
+- **Scripts.** Name them `scripts/<verb>-<noun>` (`seed-db`, `check-routes`), first line says what it does. Every kept script is registered in the project's single task entry point (`package.json` scripts or a Makefile); that list is the index. An unregistered script is a one-off and gets deleted.
+- **Lessons.** Hit the same problem twice? Turn it into a test, type or lint, not a note.
+- **Skill feedback.** One line in `~/wstack/inbox.md` (date, what happened, proposed change). Don't edit this skill mid-task.
+
+## 6. Handoff to poteto-mode
+
+Graduate when the project gets real users or data, teammates, a production deploy, an irreversible change, an expensive design fork with no clear winner, or the same fix failing twice. Hand over:
+
+- the business goals list from the entry plan, updated to what actually runs; poteto-mode turns it into a verification skill (feature map);
+- the current types and data shape, as the base for its engineering refactor;
+- the registered scripts and how to run the app.
 
 ## Don't
 
-- No multi-candidate design contests or cross-judges outside the Serious gear.
-- No long design documents or specs for Sprint work. The types and a test are the spec.
-- No asking the human about reversible choices. Decide, show the result, let them redirect. Ask only for real product or preference calls, and offer a recommendation with the question.
-- No checking beyond what the risk calls for. A prototype does not need an audit trail.
+- No design contests, cross-judges or long specs. Needing them means the work has graduated.
+- No asking about reversible choices. Decide, show the result, let the user redirect. Ask only for business or preference calls, with a recommendation.
+- No polishing ahead of the priority order while a business goal is still not running.
 
 ## Talking to the user
 
-- Lead with the result and what changed for them. Then the decision and why, briefly.
-- Label claims: **measured** (you ran it), **inferred**, or **guess**.
-- Short sentences, plain words, no jargon the user did not use first.
-- End with what's next, or the one decision you need from them.
+- Lead with what now works for the business, then the decision and why.
+- Label claims **measured** (you ran it), **inferred**, or **guess**.
+- Short sentences, plain words.
+- End with what's next, or the one decision you need.
