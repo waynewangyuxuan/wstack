@@ -17,7 +17,10 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 
 ## Flow
 
-1. **Orient.** Empty repo: skip. Existing repo: run it and sort features into works, broken, and only looks like it works. Check: can you write the plan below? Then stop orienting.
+1. **Orient.** Empty repo: skip. Existing repo: run it and sort features into works, broken, and only looks like it works.
+   - **Own the dev loop before code.** You start, check and stop the app yourself, apart from any copy the user is running, and drive one real-data path end to end. A step the user must do for you each time is a missing script, not a handoff.
+   - **Blocked?** Prove the blocker with one direct check before acting on it. Then ask once for the unlock or decision (a permission, a credential, an isolated port or data copy). Don't route around it with fakes, copies or steps handed to the user.
+   - Check: can you write the plan below, and run the app without the user? Then stop orienting.
 2. **Plan.** Write it before code.
    - **Decisions.** Who the result is for, which sets the UI bar. Where content comes from. Defaults. Ask every open product question in one message, each with a default.
    - **Goals.** One line each: "the user can ___, and we can see ___". Check: can you name what you would look at to see it working?
