@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Create .wayne/ideas/<name>.md stamped with the repo, branch, commit and date from git.
+set -euo pipefail
+
+name=${1:-}
+if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+  echo "usage: idea <name>   (lowercase words joined by dashes)" >&2
+  exit 2
+fi
+
+root=$(git rev-parse --show-toplevel)
+file="$root/.wayne/ideas/$name.md"
+if [ -e "$file" ]; then
+  echo "idea: $file already exists" >&2
+  exit 1
+fi
+
+exclude="$(git rev-parse --git-path info/exclude)"
+mkdir -p "$(dirname "$exclude")" "$root/.wayne/ideas"
+grep -qxF ".wayne/" "$exclude" 2>/dev/null || echo ".wayne/" >> "$exclude"
+
+repo=$(git remote get-url origin 2>/dev/null || echo "$root")
+branch=$(git branch --show-current)
+commit=$(git rev-parse --short HEAD)
+
+cat > "$file" <<EOF
+---
+repo: $repo
+branch: ${branch:-detached}
+commit: $commit
+date: $(date +%F)
+---
+# $name
+
+Goal: The user can
+Why:
+Context:
+EOF
+echo "$file"

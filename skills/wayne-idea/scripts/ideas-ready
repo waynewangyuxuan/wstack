@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# List ideas whose `after` bets are all done, with their goal lines.
+set -euo pipefail
+
+root=$(git rev-parse --show-toplevel)
+ideas="$root/.wayne/ideas"
+bets="$root/.wayne/bets"
+[ -d "$ideas" ] || { echo "ideas-ready: no ideas yet"; exit 0; }
+
+done_bet() {
+  local bet
+  for bet in "$bets"/*-"$1"/bet.md; do
+    [ -f "$bet" ] && grep -qx "status: done" "$bet" && return 0
+  done
+  return 1
+}
+
+ready=0
+for file in "$ideas"/*.md; do
+  [ -f "$file" ] || continue
+  name=$(basename "$file" .md)
+  after=$(awk '/^---$/{n++; next} n==1 && /^after:/ {sub(/^after:[ ]*\[?/, ""); sub(/\][ ]*$/, ""); print}' "$file" | tr ',' ' ')
+  blocked=""
+  for dep in $after; do
+    done_bet "$dep" || blocked="$blocked $dep"
+  done
+  goal=$(grep -m1 '^Goal:' "$file" | sed 's/^Goal:[ ]*//; s/[ ]*$//')
+  [ "$goal" = "The user can" ] && goal=""
+  if [ -z "$blocked" ]; then
+    echo "$name: ${goal:-(no goal written)}"
+    ready=$((ready + 1))
+  fi
+done
+[ "$ready" -gt 0 ] || echo "ideas-ready: no idea is ready"
