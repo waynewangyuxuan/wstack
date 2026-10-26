@@ -29,4 +29,5 @@ Rule files are read by path, relative to this file, when their trigger first fir
 | Refactoring or sizing a diff; tempted to add a layer, flag or wrapper; touching code that is already bad | [delete-first](rules/delete-first.md) |
 | A new requirement lands in existing code; replacing an API, model or schema | [day-one](rules/day-one.md) |
 | Writing the same instruction, guard or review note a second time | [encode-lessons](rules/encode-lessons.md) |
+| Writing a command, startup or shutdown step, migration, job, retry or rerunnable script | [idempotent](rules/idempotent.md) |
 | About to write or keep a comment; before review | [no-comments](rules/no-comments.md) |

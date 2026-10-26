@@ -12,7 +12,7 @@ A new requirement lands in existing code. Replacing an API, a data model, a sche
 2. Reshape toward that design. Don't add a branch, a flag or a parallel path that keeps the old shape and bolts the new one beside it.
 3. Replacing an API: list every caller, migrate each one, and delete the old API in the same change. Tests move to the new contract; tests that only guarded the old internals go.
 4. Keep a compatibility layer only when someone outside the repo depends on the old shape. Give it an end date and a named owner.
-5. In a phased migration, aim each phase at the target design. Don't spend effort making intermediate states smooth with code that will be thrown away.
+5. In a phased migration, aim each phase at the target design. Don't spend effort making intermediate states smooth with code that will be thrown away. Say up front where temporary breakage is acceptable, keep checks running on the areas being touched, and run the full static and runtime checks when the migration completes.
 6. Carry the change through every reference: types, call sites, configs, docs and examples.
 7. Persisted data and public APIs change in steps: add, migrate, then remove. Never drop them in one step.
 
