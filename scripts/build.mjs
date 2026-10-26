@@ -30,9 +30,10 @@ const walk = (dir) =>
     return e.isDirectory() ? walk(p) : [p];
   });
 const sha = (s) => crypto.createHash("sha256").update(s).digest("hex").slice(0, 12);
-const write = (file, content) => {
+const write = (file, content, from) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, content);
+  if (from) fs.chmodSync(file, fs.statSync(from).mode & 0o777);
 };
 const lineOf = (text, index) => text.slice(0, index).split("\n").length;
 const short = (s) => JSON.stringify(s.length > 70 ? s.slice(0, 70) + "..." : s);
@@ -74,7 +75,7 @@ const joinFrontmatter = (fm, body) => `---\n${fm.map(([k, v]) => `${k}:${v}`).jo
 function identity() {
   fs.rmSync(path.join(dist, "cursor"), { recursive: true, force: true });
   let copied = 0;
-  for (const [rel, abs] of sources) { write(path.join(dist, "cursor/skills", rel), fs.readFileSync(abs)); copied++; }
+  for (const [rel, abs] of sources) { write(path.join(dist, "cursor/skills", rel), fs.readFileSync(abs), abs); copied++; }
   for (const abs of agentSources) { write(path.join(dist, "cursor/agents", path.basename(abs)), fs.readFileSync(abs)); copied++; }
   for (const f of [".cursor-plugin/plugin.json", "LICENSE"]) { write(path.join(dist, "cursor", f), fs.readFileSync(path.join(upstream, f))); copied++; }
   return { name: "cursor", copied, transformed: 0, degraded: new Map(), errors: [] };
@@ -121,7 +122,7 @@ function compile(name, h) {
     const isText = scanExtensions.includes(ext) || proseExtensions.includes(ext);
     const rewrite = h.rewrites.find((r) => r.file === rel);
     const patches = h.patches.filter((p) => p.file === rel);
-    if (!isText && !rewrite && !patches.length) { write(path.join(out, "skills", rel), raw); copied++; continue; }
+    if (!isText && !rewrite && !patches.length) { write(path.join(out, "skills", rel), raw, abs); copied++; continue; }
 
     const original = raw.toString("utf8");
     let text = original;
@@ -158,7 +159,7 @@ function compile(name, h) {
         for (const e of extra) { write(path.join(out, "skills", skill, e.path), e.content); transformed++; }
       }
     }
-    write(path.join(out, "skills", rel), text);
+    write(path.join(out, "skills", rel), text, abs);
     if (text === original) copied++; else transformed++;
   }
 
