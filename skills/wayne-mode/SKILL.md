@@ -18,8 +18,7 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 ## Flow
 
 1. **Orient.** Empty repo: skip. Existing repo: run it and sort features into works, broken, and only looks like it works.
-   - **Own the dev loop before code.** You start, check and stop the app yourself, apart from any copy the user is running, and drive one real-data path end to end. A step the user must do for you each time is a missing script, not a handoff.
-   - **Blocked?** Prove the blocker with one direct check before acting on it. Then ask once for the unlock or decision (a permission, a credential, an isolated port or data copy). Don't route around it with fakes, copies or steps handed to the user.
+   - **Own the dev loop before code**, per [wayne-verify](../wayne-verify/SKILL.md): its recipe in `.wayne/verify/` starts, checks and drives the app without the user.
    - Check: can you write the plan below, and run the app without the user? Then stop orienting.
 2. **Plan.** Write it before code.
    - **Decisions.** Who the result is for, which sets the UI bar. Where content comes from. Defaults. Ask every open product question in one message, each with a default.
@@ -33,15 +32,15 @@ Linked skills are read by path, relative to this file. Read one when its trigger
    |---|---|
    | Build | The loop below. |
    | Question | Read only, cite `file:line`, say so if it does not exist. Subsystem walkthrough: [how](../how/SKILL.md), simple path. |
-   | Bug | Reproduce on the real path first, then [tdd](../tdd/SKILL.md). |
+   | Bug | The bug rule in [wayne-verify](../wayne-verify/SKILL.md). |
    | Refactor | Pin behavior with a test first. Crosses modules: [blast-radius](../blast-radius/SKILL.md). Rename by codemod, then grep strings, configs, SQL, docs. |
    | Unknown that running would answer | Sketch in a scratch directory, observe, delete the sketch. Don't ask. |
    | Production, real data, irreversible, public API | Hand off (below). |
 
 4. **Loop.**
-   1. **Shape.** Types and data structure before logic. Parse at the boundary, trust types inside.
+   1. **Shape.** Data first and guard the boundary, per [wayne-code](../wayne-code/SKILL.md).
    2. **Slice.** Thinnest business path a user can observe. Code fights the shape: reshape, don't patch.
-   3. **Prove.** Run the real thing, read the real output. Tests never touch development data. One test per product promise. Check: would this test still pass if every import returned `undefined`? Then rewrite it.
+   3. **Prove.** Green, then proven on the real path, per [wayne-verify](../wayne-verify/SKILL.md).
    4. **Commit green.** Message says what changed for the user.
 
    After each wave merges, use the product as a user before planning the next. User confused by a core concept: build something that shows it before building on it. Time box stated: agree scope first, fixtures over setup, stalled slice cuts to the cut line.
@@ -60,10 +59,7 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 | When | Read |
 |---|---|
 | Writing, changing or reviewing code | [wayne-code](../wayne-code/SKILL.md). Its table names the rule file for each moment. |
-| Writing or keeping a test | [test-behavior-not-implementation](../principle-test-behavior-not-implementation/SKILL.md) |
-| Before saying done | [prove-it-works](../principle-prove-it-works/SKILL.md) |
-| Debugging | [fix-root-causes](../principle-fix-root-causes/SKILL.md) |
-| Two fixes on one premise failed | [attack-the-premise](../principle-attack-the-premise/SKILL.md) |
+| Testing, proving something works, debugging | [wayne-verify](../wayne-verify/SKILL.md). Its table names the rule file for each moment. |
 | Any non-trivial edit or check | [build-the-lever](../principle-build-the-lever/SKILL.md) |
 | Parallel writers | [separate-before-serializing-shared-state](../principle-separate-before-serializing-shared-state/SKILL.md) |
 | Tempted to ask about reversible work | [never-block-on-the-human](../principle-never-block-on-the-human/SKILL.md) |
