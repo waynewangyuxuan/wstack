@@ -59,15 +59,11 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 
 | When | Read |
 |---|---|
-| Before writing logic | [foundational-thinking](../principle-foundational-thinking/SKILL.md), [model-the-domain](../principle-model-the-domain/SKILL.md) |
-| Designing types or signatures | [type-system-discipline](../principle-type-system-discipline/SKILL.md) |
-| Validation, errors, adapters | [boundary-discipline](../principle-boundary-discipline/SKILL.md) |
-| New requirement in existing code | [redesign-from-first-principles](../principle-redesign-from-first-principles/SKILL.md), [subtract-before-you-add](../principle-subtract-before-you-add/SKILL.md) |
+| Writing, changing or reviewing code | [wayne-code](../wayne-code/SKILL.md). Its table names the rule file for each moment. |
 | Writing or keeping a test | [test-behavior-not-implementation](../principle-test-behavior-not-implementation/SKILL.md) |
 | Before saying done | [prove-it-works](../principle-prove-it-works/SKILL.md) |
 | Debugging | [fix-root-causes](../principle-fix-root-causes/SKILL.md) |
 | Two fixes on one premise failed | [attack-the-premise](../principle-attack-the-premise/SKILL.md) |
-| Same instruction or correction twice | [encode-lessons-in-structure](../principle-encode-lessons-in-structure/SKILL.md) |
 | Any non-trivial edit or check | [build-the-lever](../principle-build-the-lever/SKILL.md) |
 | Parallel writers | [separate-before-serializing-shared-state](../principle-separate-before-serializing-shared-state/SKILL.md) |
 | Tempted to ask about reversible work | [never-block-on-the-human](../principle-never-block-on-the-human/SKILL.md) |
