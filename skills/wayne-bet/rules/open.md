@@ -14,7 +14,7 @@ Starting a bet from one or more ideas, or from a request made on the spot.
 4. Write `bet.md` in the format below. The goal names what you will look at to see it working. Baseline is how the user handles this today, the bar the result must beat. Each rabbit hole says how it is handled: patched with a decision now, declared out of scope, or cut.
 5. Start `log.tsv` with the header `ts	decision	why	evidence	result`. One row per decision: a fork chosen, a checkpoint verified, a pivot or revert, a blocker. Evidence is a pointer such as a commit, a path or a command, never prose.
 6. Ask every product question the bet depends on in one message, each with a default. Proceed on the defaults if the user does not answer.
-7. Parallel lanes only when the user asks for them. Split by user-visible feature, not by layer. Each lane owns its files, its proof and the evidence it returns. Two lanes editing one file means the shared contract lands first.
+7. Parallel lanes only when the user asks for them. Split by user-visible feature, not by layer. Each lane owns its files, its proof and the evidence it returns. Remove shared state between lanes first: separate worktrees, data and ports. Two lanes editing one file means the shared contract lands first; serialize writes only where one writer is a real requirement.
 
 ## Format
 

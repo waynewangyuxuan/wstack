@@ -14,7 +14,7 @@ Once per repo, write down how an agent starts the app, checks it, drives it, cap
    - **Drive.** Existing harnesses first (end-to-end specs, scripts, endpoints), then a generic one: a browser for web, a PTY or tmux for CLIs, HTTP for services.
    - **Observe.** Screenshots, terminal output, response bodies, logs, exit codes, stored state.
    - **Isolate.** A separate port, data directory or profile, so you never drive the user's own instance or data.
-2. If the checkout does not build or start, fix that first or report exactly why.
+2. If the checkout does not build or start, fix that first or report exactly why. Once it runs, sort its features into works, broken, and only looks like it works.
 3. Create `.wayne/verify/` and add `.wayne/` to `.git/info/exclude` unless the repo is yours and you choose to commit it.
 4. Write `.wayne/verify/recipe.md` with five sections, each from what step 1 found, no placeholders:
    - **Green.** The exact fast-check commands.
