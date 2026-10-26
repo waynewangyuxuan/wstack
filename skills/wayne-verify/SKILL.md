@@ -22,6 +22,6 @@ The repo's verification lives in `.wayne/verify/`, a personal folder kept out of
 | When | Read |
 |---|---|
 | `.wayne/verify/` is missing or its launch no longer works | [recipe](rules/recipe.md) |
-| A round touches a user-facing feature; closing a round | [features](rules/features.md) |
+| A bet touches a user-facing feature; closing a bet | [features](rules/features.md) |
 | Something is broken and the cause is not known | [bug](rules/bug.md) |
 | Writing, changing or keeping a test | [tests](rules/tests.md) |

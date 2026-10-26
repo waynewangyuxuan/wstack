@@ -1,10 +1,10 @@
 # Feature entries
 
-A feature entry says how to prove one user-facing feature works. Entries are written only for features a round touches, so the map grows with the work instead of being built for the whole app up front.
+A feature entry says how to prove one user-facing feature works. Entries are written only for features a bet touches, so the map grows with the work instead of being built for the whole app up front.
 
 ## When
 
-A round adds or changes a user-facing feature. Closing a round, when the entries it touched get updated.
+A bet adds or changes a user-facing feature. Closing a bet, when the entries it touched get updated.
 
 ## Do
 
@@ -18,7 +18,7 @@ A round adds or changes a user-facing feature. Closing a round, when the entries
 4. Drive through the shared control script from the recipe. Add a feature-specific script only when the shared one cannot do it, and name it in the file.
 5. Keep implementation out. Name user paths, stable handles, required state, commands and observable proof.
 6. Proving a feature means driving every sub-feature listed in its file. Report an entry point you could not reach with the command tried and the missing precondition, never as verified through another path.
-7. When a round closes, update the entries it touched to match what now runs. A described behavior the app no longer has is either a stale entry (fix the entry) or a regression (report it, don't edit the entry to hide it).
+7. When a bet closes, update the entries it touched to match what now runs. A described behavior the app no longer has is either a stale entry (fix the entry) or a regression (report it, don't edit the entry to hide it).
 
 ## Example
 
@@ -28,4 +28,4 @@ Good. `features/search.md`. Sub-features `search-open`, `search-match`, `search-
 
 ## Check
 
-Every file listed in `features/README.md` exists and has the four sections. Every feature a round touched has an entry updated in that round.
+Every file listed in `features/README.md` exists and has the four sections. Every feature a bet touched has an entry updated in that bet.

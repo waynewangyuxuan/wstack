@@ -1,6 +1,6 @@
-# One round, one PR
+# One bet, one PR
 
-A PR delivers one round's goal. In a squash-merge repo its title and description become the commit the team keeps, so the description is the permanent record of why the change exists.
+A PR delivers one bet's goal. In a squash-merge repo its title and description become the commit the team keeps, so the description is the permanent record of why the change exists.
 
 ## When
 
@@ -8,7 +8,7 @@ Opening a PR. Updating its description after review or new commits.
 
 ## Do
 
-1. Open it when wayne-verify has proven the round's goal and `scripts/check-disposable` exits 0.
+1. Open it when wayne-verify has proven the bet's goal and `scripts/check-disposable` exits 0.
 2. Title: follow the repo's convention when it has one. Otherwise one short imperative line naming what changed for the user.
 3. Description, under `##` headings in this order. Drop a section that has nothing to say. One to three short sentences or bullets each.
    - **Why.** The problem and the approach.
