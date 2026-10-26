@@ -25,3 +25,4 @@ The repo's verification lives in `.wayne/verify/`, a personal folder kept out of
 | A bet touches a user-facing feature; closing a bet | [features](rules/features.md) |
 | Something is broken and the cause is not known | [bug](rules/bug.md) |
 | Writing, changing or keeping a test | [tests](rules/tests.md) |
+| Closing a bet with spikes; a one-off script turned out to prove something | [adopt](rules/adopt.md) |
