@@ -1,6 +1,21 @@
 # wstack
 
-Wayne's agent skills: move one goal at a time to running and proven, keep every step checkable, and keep the codebase from rotting. They started from [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto; the ideas we kept are rewritten here in our own words, and pstack itself is no longer installed.
+Wayne's own set of agent skills, for building, for getting things done, for anything. Each one is hand-made, used until familiar, controllable and felt in practice. Today the set covers moving one goal at a time to running and proven, keeping every step checkable, and keeping the codebase from rotting; it grows wherever a skill earns its place.
+
+## What goes in
+
+A skill joins wstack only when it is all four:
+
+- **Hand-made.** Wayne shaped it: rewritten, cut and decided on, not copied over as is.
+- **Familiar.** Wayne can say when it triggers and what it will do.
+- **Controllable.** When it misbehaves, Wayne knows which line to change.
+- **Felt.** After using it, Wayne can name the difference it made. Observations go to `inbox.md`.
+
+Anything that fails one of these stays outside, as reading.
+
+## Raw material
+
+[pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto is raw material, not a base. A snapshot sits in `upstream/pstack/` for reading; ideas from it enter only after being rewritten here in our own words and passing the four checks above. pstack itself is not installed, and our skills never link to it. Other sources are treated the same way.
 
 ## Skills
 
