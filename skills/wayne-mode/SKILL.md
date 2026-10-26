@@ -41,7 +41,7 @@ Linked skills are read by path, relative to this file. Read one when its trigger
    1. **Shape.** Data first and guard the boundary, per [wayne-code](../wayne-code/SKILL.md).
    2. **Slice.** Thinnest business path a user can observe. Code fights the shape: reshape, don't patch.
    3. **Prove.** Green, then proven on the real path, per [wayne-verify](../wayne-verify/SKILL.md).
-   4. **Commit green.** Message says what changed for the user.
+   4. **Commit at each checkpoint**, per [wayne-git](../wayne-git/SKILL.md).
 
    After each wave merges, use the product as a user before planning the next. User confused by a core concept: build something that shows it before building on it. Time box stated: agree scope first, fixtures over setup, stalled slice cuts to the cut line.
 5. **Rot check, before each commit.**
@@ -49,7 +49,7 @@ Linked skills are read by path, relative to this file. Read one when its trigger
    - Code made dead? Delete it. Persisted data and public APIs: never in one step.
    - Same rule in two places? One home.
 6. **Keep what's reusable.**
-   - Scripts: `scripts/<verb>-<noun>`, first line says what it does, registered in the single task entry point (`package.json` scripts or Makefile). Unregistered means one-off: delete.
+   - Scripts: `scripts/<verb>-<noun>`, first line says what it does, registered in the single task entry point (`package.json` scripts or Makefile). Unregistered means one-off: a `Disposable:` commit per [wayne-git](../wayne-git/SKILL.md).
    - Same problem twice: a test, type or lint, not a note.
    - Tell the user to run `/create-verification-skill` when the first business path runs, in an unfamiliar repo, and before handoff. Give it the goals as feature-map seeds.
    - Skill feedback: one line in `~/wstack/inbox.md`.
