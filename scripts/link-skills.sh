@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Symlink a built harness into its skills and agents dirs. Safe to rerun.
+# Symlink wstack's own built skills into a harness's skills and agents dirs. Safe to rerun.
+# Links only what lives in skills/ (and agents/, if any); removes earlier links into dist/ that are not ours.
 # Never overwrites anything that is not already a symlink.
 #
 #   scripts/link-skills.sh           dist/claude-code -> ~/.claude/skills, ~/.claude/agents
@@ -38,10 +39,23 @@ link() {
   echo "linked $name -> $src"
 }
 
+ours() { [ -e "$root/skills/$1" ] || [ -e "$root/agents/$1" ]; }
+
 mkdir -p "$skills_target" "$agents_target"
 for dir in "$build"/skills/*/; do
-  link "${dir%/}" "$skills_target/$(basename "$dir")"
+  name="$(basename "$dir")"
+  ours "$name" && link "${dir%/}" "$skills_target/$name"
 done
 for file in "$build"/agents/*; do
-  link "$file" "$agents_target/$(basename "$file")"
+  [ -e "$file" ] || continue
+  name="$(basename "$file")"
+  ours "$name" && link "$file" "$agents_target/$name"
+done
+for dest in "$skills_target"/* "$agents_target"/*; do
+  [ -L "$dest" ] || continue
+  src="$(readlink "$dest")"
+  case "$src" in "$build"/skills/*|"$build"/agents/*) ;; *) continue ;; esac
+  ours "$(basename "$src")" && continue
+  rm "$dest"
+  echo "unlinked $(basename "$dest")"
 done
