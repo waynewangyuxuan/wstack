@@ -32,21 +32,20 @@ Each skill is a short index of always-on rules plus rule files read only when th
 
 ## Install
 
+Every machine installs the same way:
+
 ```bash
-npx skills add waynewangyuxuan/wstack -g     # from GitHub
-npx skills add ~/wstack -g                   # from a local checkout
+npx skills add waynewangyuxuan/wstack -g -a claude-code -s '*' -y
 ```
 
-The `skills` CLI finds the six skills under `skills/` and nothing else. Installing from GitHub gets what has been pushed.
+The `skills` CLI finds the six skills under `skills/` and nothing else, copies them into `~/.claude/skills/`, keeps their scripts executable, and records GitHub as their source.
 
 ## Working on it
 
-```bash
-node scripts/build.mjs        # regenerate dist/ for each harness
-./scripts/link-skills.sh      # link our built skills into Claude Code; add --codex for Codex
-```
+1. Edit `skills/`, then commit and push.
+2. Run `npx skills update -g` to pull the pushed version into `~/.claude/skills/`.
 
-`link-skills.sh` links only the skills in `skills/` and removes earlier links into `dist/` that are not ours. Links point into `dist/`, so rebuild after editing a skill. The build keeps script permissions, so a skill's `scripts/` stay runnable.
+To try an edit before pushing, install from the local checkout: `npx skills add ~/wstack -g -a claude-code -s '*' -y`. That makes the local path the recorded source, so run the GitHub install above again once the edit is pushed.
 
 ## Layout
 
