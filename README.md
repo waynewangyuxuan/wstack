@@ -55,10 +55,6 @@ To try an edit before pushing, install from the local checkout: `npx skills add 
 | `inbox.md` | One-line observations about our skills, batched into edits later. |
 | `upstream/pstack/` | Read-only snapshot of pstack (MIT, Lauren Tan), kept as reading material. Not installed. |
 | `upstream/pstack.lock` | The upstream commit the snapshot came from. |
-| `harness/` | Build rules per harness: substitutions, patches, rewrites, agent conversion, forbidden terms. |
-| `scripts/build.mjs` | Compiles `skills/` (and the upstream snapshot) into `dist/cursor`, `dist/claude-code` and `dist/codex`. |
-| `dist/` | Generated, gitignored. |
-| `scripts/link-skills.sh` | Links our built skills into a harness's skills and agents dirs. Never replaces a non-symlink. |
 | `scripts/sync-upstream.sh` | Pulls the latest pstack snapshot and writes `upstream/last-sync.diff`, for reading. |
 
 When pstack moves, read `upstream/last-sync.diff` and port the ideas worth keeping into `skills/` in our own words. Never link to upstream skills from ours.
