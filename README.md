@@ -1,69 +1,84 @@
 # wstack
 
-Wayne's own set of agent skills, for building, for getting things done, for anything. Each one is hand-made, used until familiar, controllable and felt in practice. Today the set covers moving one goal at a time to running and proven, keeping every step checkable, and keeping the codebase from rotting; it grows wherever a skill earns its place.
+The agent skills I use and shape through everyday work. They reflect how I want to build software with agents, and what it takes for me to trust the work.
 
-## What goes in
+## Philosophy
 
-A skill joins wstack only when it is all four:
+Reading [pstack](https://github.com/cursor/plugins/tree/main/pstack) gave me a starting point I strongly agree with: **we should be able to trust an agent's work.** My reading of its many skills comes down to two commitments: reliable business behavior and a codebase that stays understandable as it grows.
 
-- **Hand-made.** Wayne shaped it: rewritten, cut and decided on, not copied over as is.
-- **Familiar.** Wayne can say when it triggers and what it will do.
-- **Controllable.** When it misbehaves, Wayne knows which line to change.
-- **Felt.** After using it, Wayne can name the difference it made. Observations go to `inbox.md`.
+**Verify the result.** An agent should be able to run the real application, exercise it as a user would, and inspect the outcome. That capability belongs to the repo: a verification skill that knows how to launch the app, drive its features, and collect evidence. It needs to evolve with the product, covering new behavior and correcting stale checks. Verification is part of the work, and maintaining the ability to verify is part of maintaining the repo.
 
-Anything that fails one of these stays outside, as reading.
+**Always Day One.** With every new requirement, ask what the design would look like if that requirement had been known from the start. Reconsider the affected design as a whole, find where the behavior belongs, and reshape the code around it. Migrate the callers and remove the superseded paths. Each change should leave one coherent design. Accumulated patches and compatibility layers can turn a codebase into geological strata: every feature adds another layer that humans and agents must excavate to understand it.
 
-## Raw material
+Underlying this is a belief: **the codebase itself is context.** Names, data models, types, module boundaries, and existing patterns teach an agent how to make the next change.
 
-[pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto is raw material, not a base. A snapshot sits in `upstream/pstack/` for reading; ideas from it enter only after being rewritten here in our own words and passing the four checks above. pstack itself is not installed, and our skills never link to it. Other sources are treated the same way.
+- **Make the code carry its meaning.** A comment can become an escape hatch: the agent explains confusing code and leaves the confusion intact. Improve the names, types, or structure until the explanation is unnecessary. Keep comments for reasons the code cannot express.
+- **Put knowledge into structures that can be checked.** Encode business concepts and valid states in the data model. Use types, lint rules, and tests to enforce constraints. Keep behavior traceable through meaningful interfaces; remove layers that add indirection without expressing domain knowledge. Markdown instructions should carry the judgment that these mechanisms cannot encode.
+
+A codebase full of good patterns gives the next agent good examples to follow. The more knowledge its structure carries, the less we need to keep teaching the same engineering habits through extra context.
+
+Every development task therefore carries another responsibility: **leave the codebase better than you found it.** Deliver the feature, improve the design you touch, and at minimum preserve its quality. Today's code becomes the context for tomorrow's work.
+
+## What earns a place
+
+Every skill has to be:
+
+- **Hand-made.** I've rewritten, cut, and made the decisions myself.
+- **Familiar.** I know when it runs and what it will do.
+- **Controllable.** When it goes wrong, I know which rule to change.
+- **Felt.** I can name the difference it made in actual use.
+
+The set grows when a skill earns its place. Observations go into [inbox.md](inbox.md) and feed the next edit.
+
+## Get started
+
+Install:
+
+```bash
+npx skills add waynewangyuxuan/wstack
+```
+
+Start with `wayne-mode`. Give it the outcome, who it's for, and the constraints:
+
+```text
+Use wayne-mode. Let users export a note as Markdown.
+This is for existing users. Budget: one session.
+Keep the current editor UI.
+```
+
+The work becomes a **bet**: one goal with a budget. Settle the risky parts first, build in checkable steps, and stop when the goal is proven or the budget is spent. Ideas outside that goal are saved for later.
+
+Passing checks is **green**. Running the real user path and inspecting the result is **proven**. The agent sets up the repo's verification recipe so it can do both.
 
 ## Skills
 
-| Skill | What it does |
+| Skill | Purpose |
 |---|---|
-| `wayne-mode` | The entry point. Routes a situation to the right skill, decides what comes after a bet, and holds autonomy and reply rules. |
-| `wayne-idea` | Captures an idea for later, stamped with the repo, branch and commit it came from, and lists the ideas whose dependencies are done. |
-| `wayne-bet` | Runs one bet: one goal with a budget, from placing it through risks, building and stopping to closing and packaging what lasts. |
-| `wayne-code` | Code-quality rules independent of the product: data first, boundaries, delete first, day one, rules in structure, no comments, idempotent operations. |
-| `wayne-verify` | Defines green and proven, builds the repo's verification recipe in `.wayne/verify/`, feature entries, bug fixing, tests, and adopting useful spikes. |
-| `wayne-git` | Commits at checkpoints, throwaway work as `Disposable:` commits, one PR per bet, and `check-disposable` before every PR. |
+| [wayne-mode](skills/wayne-mode/SKILL.md) | Choose the next action and route to the right skill. |
+| [wayne-idea](skills/wayne-idea/SKILL.md) | Capture ideas with their source context; surface the ones ready to start. |
+| [wayne-bet](skills/wayne-bet/SKILL.md) | Take one goal from a bounded commitment to a finished or dropped bet. |
+| [wayne-code](skills/wayne-code/SKILL.md) | Keep data, boundaries, and code structure clear as the project changes. |
+| [wayne-verify](skills/wayne-verify/SKILL.md) | Run checks, drive the real app, and collect evidence. |
+| [wayne-git](skills/wayne-git/SKILL.md) | Commit at checkpoints, remove throwaway work, and deliver one PR per bet. |
 
-Each skill is a short index of always-on rules plus rule files read only when their moment comes. Per-repo working state lives in `.wayne/` (steering, bets, ideas, verify), kept out of the team's git through `.git/info/exclude`.
+Skills keep their main instructions short and load detailed rules when needed. Project context, bets, ideas, and verification live in `.wayne/`, excluded from the team's git through `.git/info/exclude`.
 
-## Install
+## Make changes
 
-Every machine installs the same way:
+Edit `skills/`. To try a change from this checkout:
 
 ```bash
-npx skills add waynewangyuxuan/wstack -g -a claude-code -s '*' -y
+npx skills add .
 ```
 
-The `skills` CLI finds the six skills under `skills/` and nothing else, copies them into `~/.claude/skills/`, keeps their scripts executable, and records GitHub as their source.
+After committing and pushing, run the GitHub install command again to restore GitHub as the source. For later updates:
 
-## Working on it
+```bash
+npx skills update
+```
 
-1. Edit `skills/`, then commit and push.
-2. Run `npx skills update -g` to pull the pushed version into `~/.claude/skills/`.
+## Sources
 
-To try an edit before pushing, install from the local checkout: `npx skills add ~/wstack -g -a claude-code -s '*' -y`. That makes the local path the recorded source, so run the GitHub install above again once the edit is pushed.
+[pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan (poteto, MIT) is a source of ideas. A reading snapshot lives in `upstream/pstack/`; its revision is recorded in `upstream/pstack.lock`. Run `scripts/sync-upstream.sh` to refresh it and review `upstream/last-sync.diff` when it changes.
 
-## Layout
-
-| Path | What |
-|---|---|
-| `skills/` | Our skills. Edit these. |
-| `inbox.md` | One-line observations about our skills, batched into edits later. |
-| `upstream/pstack/` | Read-only snapshot of pstack (MIT, Lauren Tan), kept as reading material. Not installed. |
-| `upstream/pstack.lock` | The upstream commit the snapshot came from. |
-| `scripts/sync-upstream.sh` | Pulls the latest pstack snapshot and writes `upstream/last-sync.diff`, for reading. |
-
-When pstack moves, read `upstream/last-sync.diff` and port the ideas worth keeping into `skills/` in our own words. Never link to upstream skills from ours.
-
-## Working with wayne-mode (the human side)
-
-Habits that made the difference in practice:
-
-- **Say who the result is for at the start.** A demo for yourself can be bare; a demo for others needs a product-level UI from the first slice. Changing this midway means redoing the UI.
-- **Ask when you don't understand.** Approving a concept you can't explain yet ("I'm not getting it, but A is fine") is the most expensive moment in a session. Ask for something you can see instead.
-- **Give the working rules up front.** Language, where context lives, which mode: one message at the start beats switching rules mid-session.
-- **Let the agent set up `.wayne/verify/` in a new repo.** After that it starts, checks and drives the app without you.
+Ideas enter wstack after being rewritten and tried in practice. The installed skills stand on their own, with no links into the upstream snapshot.
