@@ -1,0 +1,4 @@
+# Unlike other repos, wstack keeps its own bets, ideas and verification in git
+# so they survive a lost machine. The skills add .wayne/ to .git/info/exclude;
+# this rule takes precedence over it.
+!.wayne/
