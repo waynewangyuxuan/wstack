@@ -51,4 +51,4 @@ Design contests, cross-judges, long specs, mandatory delegation. Ask before star
 
 ## Replies
 
-Lead with what now works for the business. Label claims measured, inferred, or guess. Plain words, short sentences, one idea each. Say what a thing does, not how it feels. One name per concept. No filler, stacked hedges or chatbot phrases. Skill feedback: one line in `~/wstack/inbox.md`.
+Use [wayne-language](../wayne-language/SKILL.md) for user-facing expression. Lead with the outcome relevant to the user. Distinguish what was measured from inference or uncertainty. Skill feedback: one line in `~/wstack/inbox.md`.

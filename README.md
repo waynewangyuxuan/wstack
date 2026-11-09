@@ -54,6 +54,7 @@ Passing checks is **green**. Running the real user path and inspecting the resul
 
 | Skill | Purpose |
 |---|---|
+| [wayne-language](skills/wayne-language/SKILL.md) | Express ideas clearly, keeping the relationships a reader needs. |
 | [wayne-mode](skills/wayne-mode/SKILL.md) | Choose the next action and route to the right skill. |
 | [wayne-idea](skills/wayne-idea/SKILL.md) | Capture ideas with their source context; surface the ones ready to start. |
 | [wayne-bet](skills/wayne-bet/SKILL.md) | Take one goal from a bounded commitment to a finished or dropped bet. |
@@ -82,3 +83,5 @@ npx skills update
 [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan (poteto, MIT) is a source of ideas. A reading snapshot lives in `upstream/pstack/`; its revision is recorded in `upstream/pstack.lock`. Run `scripts/sync-upstream.sh` to refresh it and review `upstream/last-sync.diff` when it changes.
 
 Ideas enter wstack after being rewritten and tried in practice. The installed skills stand on their own, with no links into the upstream snapshot.
+
+[Why is AI-generated language so hard to understand?](https://arxiv.org/abs/2610.29162) (Clark, Martin & Mahowald, 2026) informs `wayne-language`: preserve the wording that helps a reader follow relationships instead of minimizing tokens. The paper studies English; the skill is an editorial application, not a validated intervention.
