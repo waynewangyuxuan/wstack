@@ -46,7 +46,7 @@ This is for existing users. Budget: one session.
 Keep the current editor UI.
 ```
 
-The work becomes a **bet**: one goal with a budget. Settle the risky parts first, build in checkable steps, and stop when the goal is proven or the budget is spent. Ideas outside that goal are saved for later.
+`wayne-mode` splits the request into separate needs. What is done now becomes a **bet**: one goal with a budget. Settle the risky parts first, build in checkable steps, and stop when the goal is proven or the budget is spent. Needs outside that goal are saved as ideas for later.
 
 Passing checks is **green**. Running the real user path and inspecting the result is **proven**. The agent sets up the repo's verification recipe so it can do both.
 

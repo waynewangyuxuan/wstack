@@ -1,0 +1,4 @@
+ts	decision	why	evidence	result
+2026-11-12	Add an intake step that splits a request into a bet and ideas	The two-needs pianke session opened one bet and saved no idea	pianke session 8b311623	Intake section in wayne-mode
+2026-11-12	checkpoint: a session with the mode loaded sorts a two-need request	Goal names this as the proof	claude -p on scratch notes-app	bet 0001-export-markdown, idea tag-search
+2026-11-12	Revert automatic loading	Wayne wants the mode only when named	conversation	Description restored, CLAUDE.md line removed

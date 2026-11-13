@@ -15,6 +15,16 @@ When they compete: business behavior end to end, then proof, then engineering ex
 
 Linked skills are read by path, relative to this file. Read one when its trigger first fires in a session.
 
+## Intake
+
+While this mode is on, run this on every new request, before the first edit. Skip it for a question or a fix of a few lines.
+
+1. List each separate need in the request, one line each.
+2. Look in `.wayne/bets/` for a bet with `status: open`. A need that serves its goal joins it as a scope.
+3. Pick what is done now. One need, or several needs that share one goal, becomes one bet through [wayne-bet](../wayne-bet/SKILL.md).
+4. Save every other need through [wayne-idea](../wayne-idea/SKILL.md), so none is lost.
+5. Tell the user in a line or two which need went where, then start. Don't wait for approval.
+
 ## Route
 
 | Situation | Go to |
