@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+store=${WAYNE_STORE:-$HOME/wayne-store}
+root=$(git rev-parse --show-toplevel)
+mine="$root/.wayne"
+
+if [ -n "$(git -C "$root" ls-files .wayne | head -1)" ]; then
+  echo "store: this repo commits .wayne itself; nothing to mirror"
+  exit 0
+fi
+
+exclude=$(git rev-parse --git-path info/exclude)
+mkdir -p "$(dirname "$exclude")"
+grep -qxF ".wayne/" "$exclude" 2>/dev/null || echo ".wayne/" >> "$exclude"
+
+if url=$(git remote get-url origin 2>/dev/null); then
+  id=$(printf '%s' "$url" | sed -E 's#\.git$##; s#^.*[:/]([^/]+)/([^/]+)$#\1-\2#')
+else
+  id=$(basename "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")")
+fi
+theirs="$store/$id"
+
+if [ ! -d "$store/.git" ]; then
+  mkdir -p "$store"
+  git -C "$store" init -q
+fi
+
+skip=(--exclude .store-head --exclude .DS_Store --exclude verify/runs/ --exclude verify/run/)
+seen=$(cat "$mine/.store-head" 2>/dev/null || true)
+head=$(git -C "$store" log -1 --format=%H -- "$id" 2>/dev/null || true)
+merged=""
+
+if [ -d "$theirs" ] && [ ! -d "$mine" ]; then
+  rsync -a "$theirs/" "$mine/"
+  echo "store: restored .wayne from $theirs"
+elif [ -d "$theirs" ] && [ "$seen" != "$head" ]; then
+  if [ -n "$seen" ] && git -C "$store" cat-file -e "$seen" 2>/dev/null; then
+    git -C "$store" diff --no-renames --diff-filter=D --name-only "$seen" "$head" -- "$id" |
+      while IFS= read -r gone; do rm -f "$mine/${gone#"$id"/}"; done
+  fi
+  rsync -a --update "${skip[@]}" "$theirs/" "$mine/"
+  merged=1
+  echo "store: merged changes saved from another checkout"
+fi
+
+if [ ! -d "$mine" ]; then
+  echo "store: no .wayne yet; nothing to save"
+  exit 0
+fi
+
+mkdir -p "$theirs"
+if [ -n "$merged" ]; then
+  rsync -a --update "${skip[@]}" "$mine/" "$theirs/"
+else
+  rsync -a --delete "${skip[@]}" "$mine/" "$theirs/"
+fi
+
+git -C "$store" add -A -- "$id"
+if ! git -C "$store" diff --cached --quiet -- "$id"; then
+  git -C "$store" commit -q -m "$id: ${1:-save}" -- "$id"
+  echo "store: saved $id"
+fi
+git -C "$store" log -1 --format=%H -- "$id" > "$mine/.store-head"
+
+if git -C "$store" remote get-url origin >/dev/null 2>&1; then
+  git -C "$store" push -q origin HEAD || echo "store: push failed; the save is local only"
+fi

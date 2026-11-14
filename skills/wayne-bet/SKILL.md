@@ -9,7 +9,7 @@ A bet is one goal with a budget. It ends when the goal is proven or the budget i
 
 ## Where things live
 
-All in `.wayne/` of the repo, kept out of the team's git through `.git/info/exclude`.
+All in `.wayne/` of the repo, kept out of the team's git through `.git/info/exclude` and mirrored to the store per [wayne-mode](../wayne-mode/SKILL.md).
 
 - `steering/product.md` holds the product's intent and an index of decisions. `steering/baseline.md` holds what past bets cost against their budget and how they failed. Both are always read and stay short.
 - `bets/<NNNN>-<name>/` is one bet: `bet.md`, an append-only `log.tsv`, and disposable `notes/`. Only the current bet is read.

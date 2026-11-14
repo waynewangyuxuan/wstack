@@ -1,0 +1,5 @@
+ts	decision	why	evidence	result
+2026-11-13	Mirror real files instead of symlinking into the store	Agent Read, Write and Bash were all denied through a symlink that leaves the working directory	two claude -p runs on scratch linktest	scripts/store with rsync
+2026-11-13	Name a project by owner-repo from origin	Stable across clones and worktrees, readable when browsing the store	skills/wayne-mode/scripts/store	Falls back to the folder name without a remote
+2026-11-13	Remove locally what the store deleted since the last sync	A file deleted in one checkout came back from the other	scratch t1 and t1-wt run	Deletes and moves now carry over
+2026-11-13	checkpoint: script cases and one agent session	Goal names save, restore and prompt-free writes	scratch store-test, run4	0 denials, 2 store commits

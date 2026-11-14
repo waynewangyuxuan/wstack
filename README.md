@@ -62,7 +62,11 @@ Passing checks is **green**. Running the real user path and inspecting the resul
 | [wayne-verify](skills/wayne-verify/SKILL.md) | Run checks, drive the real app, and collect evidence. |
 | [wayne-git](skills/wayne-git/SKILL.md) | Commit at checkpoints, remove throwaway work, and deliver one PR per bet. |
 
-Skills keep their main instructions short and load detailed rules when needed. Project context, bets, ideas, and verification live in `.wayne/`, excluded from the team's git through `.git/info/exclude`.
+Skills keep their main instructions short and load detailed rules when needed. Project context, bets, ideas, and verification live in `.wayne/`, excluded from the team's git through `.git/info/exclude`. `wayne-mode` mirrors each project's `.wayne/` to one private repo, `~/wayne-store/`, so it has history and survives a lost machine. Add a private remote there to back it up:
+
+```bash
+git -C ~/wayne-store remote add origin <your private repo>
+```
 
 ## Make changes
 

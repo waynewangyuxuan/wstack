@@ -19,11 +19,12 @@ Linked skills are read by path, relative to this file. Read one when its trigger
 
 While this mode is on, run this on every new request, before the first edit. Skip it for a question or a fix of a few lines.
 
-1. List each separate need in the request, one line each.
-2. Look in `.wayne/bets/` for a bet with `status: open`. A need that serves its goal joins it as a scope.
-3. Pick what is done now. One need, or several needs that share one goal, becomes one bet through [wayne-bet](../wayne-bet/SKILL.md).
-4. Save every other need through [wayne-idea](../wayne-idea/SKILL.md), so none is lost.
-5. Tell the user in a line or two which need went where, then start. Don't wait for approval.
+1. Run `scripts/store` (relative to this skill) from the repo. It restores `.wayne/` in a fresh clone or worktree and saves it to the store. If it fails, say so in one line and carry on.
+2. List each separate need in the request, one line each.
+3. Look in `.wayne/bets/` for a bet with `status: open`. A need that serves its goal joins it as a scope.
+4. Pick what is done now. One need, or several needs that share one goal, becomes one bet through [wayne-bet](../wayne-bet/SKILL.md).
+5. Save every other need through [wayne-idea](../wayne-idea/SKILL.md), so none is lost.
+6. Tell the user in a line or two which need went where, then start. Don't wait for approval.
 
 ## Route
 
@@ -39,7 +40,7 @@ While this mode is on, run this on every new request, before the first edit. Ski
 
 ## After a bet
 
-Read its outcome in `bet.md`. Use the product as a user once. Run `ideas-ready` from wayne-idea and propose the next bet, or ask the one product question that decides it. A user confused by a core concept gets something that shows it before anything is built on it.
+Run `scripts/store "close <bet>"`. Read its outcome in `bet.md`. Use the product as a user once. Run `ideas-ready` from wayne-idea and propose the next bet, or ask the one product question that decides it. A user confused by a core concept gets something that shows it before anything is built on it.
 
 ## Skills
 
@@ -48,6 +49,10 @@ Read its outcome in `bet.md`. Use the product as a user once. Run `ideas-ready` 
 | Writing, changing or reviewing code | [wayne-code](../wayne-code/SKILL.md) |
 | Testing, proving something works, debugging | [wayne-verify](../wayne-verify/SKILL.md) |
 | Committing, throwaway work, opening a PR | [wayne-git](../wayne-git/SKILL.md) |
+
+## Store
+
+`.wayne/` holds real files inside the repo, so reading and writing them needs nothing special. In a repo you don't own it stays out of the team's git, and `scripts/store` mirrors it to one private repo for all projects, `~/wayne-store/<owner>-<repo>/`, with a commit per save. A repo of your own can commit `.wayne/` instead; the script then does nothing. Per-run data under `verify/runs/` is not mirrored.
 
 ## Autonomy
 
