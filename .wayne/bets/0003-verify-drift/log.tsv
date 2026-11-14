@@ -1,0 +1,3 @@
+ts	decision	why	evidence	result
+2026-11-12	Record the checked commit in recipe.md instead of using file dates	.wayne/ is excluded from git, and ideas already track drift by commit	skills/wayne-idea/SKILL.md	Checked at line
+2026-11-12	checkpoint: skip and run paths both seen	Goal names the skip path as the proof	two claude -p runs on scratch notes-app copies	No run on a README commit; fix and rerun on a renamed entry file

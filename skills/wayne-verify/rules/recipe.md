@@ -23,7 +23,7 @@ Once per repo, write down how an agent starts the app, checks it, drives it, cap
    - **Drive.** The commands that act on the app, using stable handles: labels, routes, prompt strings, not coordinates.
    - **Evidence and cleanup.** What to capture and where it is kept. Cleanup stops what you started, never kills by process name, and never deletes the evidence.
 5. Put shared helpers in `.wayne/verify/scripts/`. Prefer one control script that every feature calls for launch, doctor, drive and capture. Every script is executable and its usage appears in `recipe.md`.
-6. Run the recipe end to end once: green, launch, doctor, drive one real path, capture, clean up, then confirm the evidence still exists. A recipe never executed is a draft.
+6. Run the recipe end to end once: green, launch, doctor, drive one real path, capture, clean up, then confirm the evidence still exists. A recipe never executed is a draft. Then write `Checked at: <commit>` as the first line of `recipe.md`, the commit it ran on.
 
 ## Example
 
