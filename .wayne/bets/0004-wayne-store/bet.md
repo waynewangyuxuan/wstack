@@ -21,5 +21,6 @@ Scopes:
 Outcome:
 Added `scripts/store` to wayne-mode, called at Intake and after a bet. `.wayne/` stays as real files; the script mirrors it to `~/wayne-store/<owner>-<repo>/` with one commit per save.
 Proven by driving the script on scratch repos: first save, no-op when unchanged, restore in a new worktree, two checkouts saving in turn, a delete and a move carried to the other checkout, no-op in a repo that commits `.wayne/`. A fresh agent session ran it at Intake and at the end with zero permission denials.
-Not done: no remote on the store yet, so there is no off-machine backup. pianke and CSE-216 are mirrored on their next wayne-mode session, not now.
+The store at `~/wayne-store` now pushes to the private repo `wayne-store`; pianke and CSE-216 are in it.
+Added after close: each save pulls first, and a checkout that is behind is merged by git three ways, so several machines and worktrees can share the store. Edits to the same lines: the later save wins. Proven with two simulated machines against a local remote; both ended identical.
 Not measured: a sandboxed session, where writing to `~/wayne-store` may be blocked; the skill tells the agent to say so and carry on.

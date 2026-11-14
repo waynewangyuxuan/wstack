@@ -4,6 +4,7 @@ set -euo pipefail
 store=${WAYNE_STORE:-$HOME/wayne-store}
 root=$(git rev-parse --show-toplevel)
 mine="$root/.wayne"
+msg=${1:-save}
 
 if [ -n "$(git -C "$root" ls-files .wayne | head -1)" ]; then
   echo "store: this repo commits .wayne itself; nothing to mirror"
@@ -23,46 +24,65 @@ theirs="$store/$id"
 
 if [ ! -d "$store/.git" ]; then
   mkdir -p "$store"
-  git -C "$store" init -q
+  git -C "$store" init -q -b main
 fi
 
-skip=(--exclude .store-head --exclude .DS_Store --exclude verify/runs/ --exclude verify/run/)
-seen=$(cat "$mine/.store-head" 2>/dev/null || true)
-head=$(git -C "$store" log -1 --format=%H -- "$id" 2>/dev/null || true)
-merged=""
-
-if [ -d "$theirs" ] && [ ! -d "$mine" ]; then
-  rsync -a "$theirs/" "$mine/"
-  echo "store: restored .wayne from $theirs"
-elif [ -d "$theirs" ] && [ "$seen" != "$head" ]; then
-  if [ -n "$seen" ] && git -C "$store" cat-file -e "$seen" 2>/dev/null; then
-    git -C "$store" diff --no-renames --diff-filter=D --name-only "$seen" "$head" -- "$id" |
-      while IFS= read -r gone; do rm -f "$mine/${gone#"$id"/}"; done
+remote=""
+if git -C "$store" remote get-url origin >/dev/null 2>&1; then
+  remote=1
+  branch=$(git -C "$store" branch --show-current)
+  if ! git -C "$store" pull -q --no-rebase --no-edit -X ours origin "$branch" 2>/dev/null; then
+    git -C "$store" merge --abort 2>/dev/null || true
+    echo "store: could not pull; using the local copy"
   fi
-  rsync -a --update "${skip[@]}" "$theirs/" "$mine/"
-  merged=1
+fi
+
+copy=(rsync -a -c --exclude .store-head --exclude .DS_Store --exclude verify/runs/ --exclude verify/run/)
+commit() {
+  git -C "$1" add -A -- "$id"
+  git -C "$1" diff --cached --quiet -- "$id" && return 1
+  git -C "$1" commit -q -m "$id: $msg" -- "$id"
+}
+
+seen=$(cat "$mine/.store-head" 2>/dev/null || true)
+git -C "$store" cat-file -e "$seen^{commit}" 2>/dev/null || seen=""
+head=$(git -C "$store" log -1 --format=%H -- "$id" 2>/dev/null || true)
+
+if [ ! -d "$mine" ] && [ ! -d "$theirs" ]; then
+  echo "store: no .wayne yet; nothing to save"
+  exit 0
+elif [ ! -d "$mine" ]; then
+  "${copy[@]}" "$theirs/" "$mine/"
+  echo "store: restored .wayne from $theirs"
+elif [ ! -d "$theirs" ] || [ "$seen" = "$head" ]; then
+  mkdir -p "$theirs"
+  "${copy[@]}" --delete "$mine/" "$theirs/"
+  commit "$store" && echo "store: saved $id"
+elif [ -z "$seen" ]; then
+  "${copy[@]}" "$mine/" "$theirs/"
+  commit "$store" && echo "store: saved $id"
+  "${copy[@]}" --ignore-existing "$theirs/" "$mine/"
+else
+  tmp=$(mktemp -d)
+  git -C "$store" worktree add -q --detach "$tmp/w" "$seen"
+  mkdir -p "$tmp/w/$id"
+  "${copy[@]}" --delete "$mine/" "$tmp/w/$id/"
+  if commit "$tmp/w"; then
+    if ! git -C "$store" merge -q -X theirs -m "$id: $msg" "$(git -C "$tmp/w" rev-parse HEAD)" >/dev/null 2>&1; then
+      git -C "$store" checkout --theirs -- "$id"
+      git -C "$store" add -A -- "$id"
+      git -C "$store" commit -q -m "$id: $msg"
+    fi
+    echo "store: saved $id"
+  fi
+  git -C "$store" worktree remove --force "$tmp/w"
+  rm -rf "$tmp"
+  "${copy[@]}" --delete "$theirs/" "$mine/"
   echo "store: merged changes saved from another checkout"
 fi
 
-if [ ! -d "$mine" ]; then
-  echo "store: no .wayne yet; nothing to save"
-  exit 0
-fi
-
-mkdir -p "$theirs"
-if [ -n "$merged" ]; then
-  rsync -a --update "${skip[@]}" "$mine/" "$theirs/"
-else
-  rsync -a --delete "${skip[@]}" "$mine/" "$theirs/"
-fi
-
-git -C "$store" add -A -- "$id"
-if ! git -C "$store" diff --cached --quiet -- "$id"; then
-  git -C "$store" commit -q -m "$id: ${1:-save}" -- "$id"
-  echo "store: saved $id"
-fi
 git -C "$store" log -1 --format=%H -- "$id" > "$mine/.store-head"
 
-if git -C "$store" remote get-url origin >/dev/null 2>&1; then
-  git -C "$store" push -q origin HEAD || echo "store: push failed; the save is local only"
+if [ -n "$remote" ]; then
+  git -C "$store" push -q origin HEAD 2>/dev/null || echo "store: push failed; the save is local only"
 fi

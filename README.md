@@ -68,6 +68,8 @@ Skills keep their main instructions short and load detailed rules when needed. P
 git -C ~/wayne-store remote add origin <your private repo>
 ```
 
+Each save pulls first, so several machines can share the store. On a new machine, clone that repo to `~/wayne-store`.
+
 ## Make changes
 
 Edit `skills/`. To try a change from this checkout:
