@@ -42,11 +42,11 @@ Start with `wayne-mode`. Give it the outcome, who it's for, and the constraints:
 
 ```text
 Use wayne-mode. Let users export a note as Markdown.
-This is for existing users. Budget: one session.
+This is for existing users. No rush, show me when it works.
 Keep the current editor UI.
 ```
 
-`wayne-mode` splits the request into separate needs. What is done now becomes a **bet**: one goal with a budget. Settle the risky parts first, build in checkable steps, and stop when the goal is proven or the budget is spent. Needs outside that goal are saved as ideas for later.
+`wayne-mode` splits the request into separate needs. What is done now becomes a **bet**: one run of agent work toward one goal, with a budget that says how you take part and how urgent it is. Settle the risky parts first, build in checkable steps, and stop when the goal is proven or the bet needs more of you than the budget says. Needs outside that goal are saved as ideas for later.
 
 Passing checks is **green**. Running the real user path and inspecting the result is **proven**. The agent sets up the repo's verification recipe so it can do both.
 
