@@ -1,6 +1,6 @@
 ---
 name: wayne-code
-description: How to write code that stays healthy, independent of what the code is for. Use whenever you write, change or review code in any repo.
+description: How we write code that stays healthy, whatever the code is for. Must be read before the first code you write, change or review in a session, in any repo. It is short, and its detailed rules are read only when their situation comes up.
 ---
 
 # Wayne code

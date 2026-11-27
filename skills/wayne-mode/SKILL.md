@@ -44,7 +44,7 @@ Read its outcome in `bet.md`. Use the product as a user once. Run `ideas-ready` 
 
 | When | Read |
 |---|---|
-| Writing, changing or reviewing code | [wayne-code](../wayne-code/SKILL.md) |
+| Before the first code you write, change or review. Required. | [wayne-code](../wayne-code/SKILL.md) |
 | Testing, proving something works, debugging | [wayne-verify](../wayne-verify/SKILL.md) |
 | Committing, throwaway work, opening a PR | [wayne-git](../wayne-git/SKILL.md) |
 
