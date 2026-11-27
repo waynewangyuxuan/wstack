@@ -1,0 +1,8 @@
+ts	decision	why	evidence	result
+2026-11-24	Give .wayne its own skill instead of leaving the script in wayne-mode	Sessions that called wayne-bet or wayne-idea directly never ran the script	skills/wayne-store/SKILL.md	Each skill that writes a file saves it
+2026-11-24	Mirror verify/runs too	Skipping it was a guess about size; it had skipped one 12K file across four projects	skills/wayne-store/scripts/store	The script copies all of .wayne
+2026-11-26	Keep wayne-idea a skill of its own	An idea is captured in sessions that never open a bet	skills/wayne-idea/scripts/idea	One command writes the idea and saves it
+2026-11-26	Budget is one line about how the user takes part	A count of sessions did not tell the agent when to stop and ask	skills/wayne-bet/SKILL.md	Three examples in the main file
+2026-11-26	Name wayne-code only in wayne-mode, not in the build rule	It is the entry to a set of principles, loaded once, not a step	skills/wayne-mode/SKILL.md	Its description says it must be read; an audit is kept as an idea
+2026-11-26	checkpoint: links and scripts	Goal names a save without wayne-mode and a restore in a fresh worktree	skills/wayne-idea/scripts/idea on a scratch repo and store	56 links resolve; capture, restore, save and pickup pass
+2026-11-26	Ship without the fresh-session test	The user chose to	bet.md Outcome	Whether agents follow the save steps is not measured
