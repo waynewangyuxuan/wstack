@@ -17,7 +17,7 @@ The goal is proven, or the budget is spent.
 3. Go through each spike. One that drives a real path or checks a real dependency and will be needed again is adopted per wayne-verify's adopt rule. The rest are deleted.
 4. Delete `notes/` and the spikes in one commit per wayne-git, then run `check-disposable` until it is clean.
 5. Read `.wayne/ideas/` and delete ideas no longer wanted.
-6. Write three lines under Outcome in `bet.md`: what the user can do now, what was cut, what was learned. Set `status: done` or `status: dropped`.
+6. Write three lines under Outcome in `bet.md`: what the user can do now, what was cut, what was learned. Set `status: done` or `status: dropped`. Save per [wayne-store](../../wayne-store/SKILL.md).
 7. Hand back to wayne-mode with the outcome and the output of `ideas-ready`.
 
 ## Example
