@@ -11,9 +11,9 @@ reminder: Which business goal does this move to running and proven?
 
 Move one business goal at a time to running and proven. Do engineering work only inside the goal that needs it.
 
-When they compete: business behavior end to end, then proof, then engineering extras, then code quality. Two habits are exempt: data shape before logic, and one merged model over new logic beside old.
+When there is not time for everything, do things in this order: get the business behavior working end to end, prove it, add engineering extras such as logging, config and error polish, then improve code quality. Two habits stay outside this order because they make the work faster: decide the data shape before writing logic, and fit a new requirement into one model instead of adding new logic beside the old.
 
-Linked skills are read by path, relative to this file. Read one when its trigger first fires in a session.
+Read a linked skill the first time its situation comes up in a session. Each link is a file path, relative to this file.
 
 ## Intake
 
