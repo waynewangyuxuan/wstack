@@ -22,7 +22,7 @@ While this mode is on, run this on every new request, before the first edit. Ski
 1. Once per session, run the store script per [wayne-store](../wayne-store/SKILL.md). A fresh clone or worktree starts without `.wayne/`, and the script copies it back.
 2. List each separate need in the request, one line each.
 3. A need that serves the open bet's goal joins it as a scope. Of the rest, one need, or several that share one goal, becomes a bet now through [wayne-bet](../wayne-bet/SKILL.md). The others are saved through [wayne-idea](../wayne-idea/SKILL.md), so none is lost.
-4. Tell the user in a line or two which need went where, then start. Don't wait for approval.
+4. Tell the user in a line or two which need went where, then start. Don't wait for approval. Example: "Now: export-pdf, as a bet. No rush, I'll show you when it works. Saved for later: tag-search."
 
 ## Route
 
