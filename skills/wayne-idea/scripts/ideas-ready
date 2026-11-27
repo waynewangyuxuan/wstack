@@ -3,6 +3,7 @@
 set -euo pipefail
 
 root=$(git rev-parse --show-toplevel)
+[ -d "$root/.wayne" ] || "$(dirname "$0")/../../wayne-store/scripts/store" >/dev/null 2>&1 || true
 ideas="$root/.wayne/ideas"
 bets="$root/.wayne/bets"
 [ -d "$ideas" ] || { echo "ideas-ready: no ideas yet"; exit 0; }

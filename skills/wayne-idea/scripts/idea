@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
-# Create .wayne/ideas/<name>.md stamped with the repo, branch, commit and date from git.
 set -euo pipefail
 
-name=${1:-}
-if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
-  echo "usage: idea <name>   (lowercase words joined by dashes)" >&2
+usage() {
+  echo "usage: idea <name> <goal> <why> <context>   (name: lowercase words joined by dashes)" >&2
   exit 2
-fi
+}
+[ $# -eq 4 ] || usage
+name=$1 goal=$2 why=$3 context=$4
+[[ "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || usage
 
 root=$(git rev-parse --show-toplevel)
+store="$(dirname "$0")/../../wayne-store/scripts/store"
+[ -d "$root/.wayne" ] || "$store" >/dev/null 2>&1 || true
 file="$root/.wayne/ideas/$name.md"
 if [ -e "$file" ]; then
   echo "idea: $file already exists" >&2
   exit 1
 fi
-
-exclude="$(git rev-parse --git-path info/exclude)"
-mkdir -p "$(dirname "$exclude")" "$root/.wayne/ideas"
-grep -qxF ".wayne/" "$exclude" 2>/dev/null || echo ".wayne/" >> "$exclude"
+mkdir -p "$root/.wayne/ideas"
 
 repo=$(git remote get-url origin 2>/dev/null || echo "$root")
 branch=$(git branch --show-current)
-commit=$(git rev-parse --short HEAD)
+commit=$(git rev-parse --short HEAD 2>/dev/null || echo none)
 
 cat > "$file" <<EOF
 ---
@@ -32,8 +32,9 @@ date: $(date +%F)
 ---
 # $name
 
-Goal: The user can
-Why:
-Context:
+Goal: $goal
+Why: $why
+Context: $context
 EOF
 echo "$file"
+"$store" "idea $name" || echo "idea: saved in the repo only; the store step failed" >&2
