@@ -16,16 +16,17 @@ The goal is proven, or the budget is spent.
    - **Features.** Update the feature entries this bet touched, per wayne-verify.
 3. Go through each spike. One that drives a real path or checks a real dependency and will be needed again is adopted per wayne-verify's adopt rule. The rest are deleted.
 4. Delete `notes/` and the spikes in one commit per wayne-git, then run `check-disposable` until it is clean.
-5. Read `.wayne/ideas/` and delete the ideas no longer wanted. An idea that matters comes back.
-6. Write three lines under Outcome in `bet.md`: what the user can do now, what was cut, what was learned. Set `status: done` or `status: dropped`. Save per [wayne-store](../../wayne-store/SKILL.md).
-7. Hand back to wayne-mode with the outcome.
+5. Sort what is in the bet's `local/` by whether it can be made again. Cheap to make again: delete it. Costly to make again: leave it. Cannot be made again and still needed: move it into the repo. For the first two, `bet.md` says what it was for and how to make it again.
+6. Read `.wayne/ideas/` and delete the ideas no longer wanted. An idea that matters comes back.
+7. Write three lines under Outcome in `bet.md`: what the user can do now, what was cut, what was learned. Set `status: done` or `status: dropped`. Save per [wayne-store](../../wayne-store/SKILL.md).
+8. Hand back to wayne-mode with the outcome.
 
 ## Example
 
 Bad. The bet ends with `notes/plan-v3.md`, two spike scripts and a long progress file left behind, and the next bet starts by rereading all of them.
 
-Good. The spike that calls the real payment sandbox becomes `verify sandbox-check`. The decision to store no card data becomes decision 4 in `steering/product.md`, pointing at the PR. The baseline gains "checkout-retry: budget no rush, show when done; stopped for the user twice; the sandbox rate limit was found late". Notes and spikes are gone, and `check-disposable` is clean.
+Good. The spike that calls the real payment sandbox becomes `verify sandbox-check`. The decision to store no card data becomes decision 4 in `steering/product.md`, pointing at the PR. The baseline gains "checkout-retry: budget no rush, show when done; stopped for the user twice; the sandbox rate limit was found late". The sandbox recordings in `local/` are deleted, and `bet.md` names the command that records them again. Notes and spikes are gone, and `check-disposable` is clean.
 
 ## Check
 
-`check-disposable` exits 0, `notes/` is gone, `bet.md` has an outcome and a final status, and `steering/` grew by at most a few lines.
+`check-disposable` exits 0, `notes/` is gone, `local/` holds only what `bet.md` names, `bet.md` has an outcome and a final status, and `steering/` grew by at most a few lines.

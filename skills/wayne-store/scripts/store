@@ -37,7 +37,7 @@ if git -C "$store" remote get-url origin >/dev/null 2>&1; then
   fi
 fi
 
-copy=(rsync -a -c --exclude .store-head --exclude .DS_Store)
+copy=(rsync -a -c --exclude .store-head --exclude .DS_Store --exclude local/)
 commit() {
   git -C "$1" add -A -- "$id"
   git -C "$1" diff --cached --quiet -- "$id" && return 1

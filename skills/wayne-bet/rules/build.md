@@ -14,7 +14,7 @@ Settle what is uncertain first, get one real path working end to end, then add o
    - A new module, a public function, or a type other code will use → [sketch](sketch.md) its shape first.
    - A batch of similar edits, a migration, a check you will run again, or work you would hand to subagents → build the [lever](lever.md) first.
 4. At each checkpoint, reach green per wayne-verify, commit per wayne-git, and save per [wayne-store](../../wayne-store/SKILL.md).
-5. Scopes found while building go into `bet.md`, marked uphill (still working out how) or downhill (only doing it). Decisions go into `log.tsv`.
+5. Scopes found while building go into `bet.md`, marked uphill (still working out how) or downhill (only doing it). Decisions go into `log.tsv`. Files the work makes along the way that are not records, such as raw output, downloads and caches, go into the bet's `local/`, which the store never saves.
 
 ## Example
 
