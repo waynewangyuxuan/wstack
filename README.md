@@ -62,6 +62,7 @@ Passing checks is **green**. Running the real user path and inspecting the resul
 | [wayne-code](skills/wayne-code/SKILL.md) | Keep data, boundaries, and code structure clear as the project changes. |
 | [wayne-verify](skills/wayne-verify/SKILL.md) | Run checks, drive the real app, and collect evidence. |
 | [wayne-git](skills/wayne-git/SKILL.md) | Commit at checkpoints, remove throwaway work, and deliver one PR per bet. |
+| [wayne-models](skills/wayne-models/SKILL.md) | Call other models through headless CLIs, for one prompt or a batch. |
 
 Skills keep their main instructions short and load detailed rules when needed. Project context, bets, ideas, and verification live in `.wayne/`, excluded from the team's git through `.git/info/exclude`. `wayne-store` mirrors each project's `.wayne/` to one private repo, `~/wayne-store/`, so it has history and survives a lost machine. Add a private remote there to back it up:
 
