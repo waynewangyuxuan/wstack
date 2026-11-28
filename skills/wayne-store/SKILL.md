@@ -16,6 +16,8 @@ A project's working files live in `.wayne/` of its repo, kept out of the team's 
 
 Nothing else goes in `.wayne/`.
 
+A folder named `local/` is never saved, wherever it sits in `.wayne/`. Put there what the work makes or needs along the way and is not a record: a test instance's data, caches, a browser profile, installed dependencies, raw output. These belong to one checkout, and some are large or hold secrets. Example: `bets/0007-export-pdf/local/` for one bet, `verify/runs/<run>/local/` for one verification run, `verify/local/` for what every run shares.
+
 ## The store script
 
 Run `scripts/store` (relative to this skill) from the repo. One call copies `.wayne/` back from the store when it is missing, merges what another checkout or machine saved, and saves what changed here.

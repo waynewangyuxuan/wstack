@@ -10,4 +10,3 @@ One line per observation: date, what happened, proposed change. Batch into skill
 2026-11-17 wayne-mode: parallel ownership plus a shared frozen-source contract enabled four research lanes; keep provisional official metrics visibly separate from reviewed semantic qualification.
 
 2026-11-18 wayne-mode: 612并行trace审阅与18真实续跑可并行推进，但冻结证据审阅应固定各lane输出范围；先统一语义/未知/越权口径，再合并source hashes，避免相同指标在不同lane偷偷换定义。
-- 2026-11-27 wayne-store: rsync copies everything in .wayne/ (ignores .gitignore), so verify profiles/node_modules there get duplicated into ~/wayne-store; recipe rule should say keep heavy or secret state outside .wayne/.
