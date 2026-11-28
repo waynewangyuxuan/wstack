@@ -1,0 +1,10 @@
+ts	decision	why	evidence	result
+2026-11-27	Skill plus a script, not an MCP server	Batch items should not pass through the calling agent's context one tool call at a time	conversation research	Script does concurrency and JSONL
+2026-11-27	Headless subscription CLIs only, no API keys	User: subscriptions first; removes the public-repo key question for now	user message	Doppler stays out of the repo
+2026-11-27	Name it wayne-models	The API providers planned later still fit the name; wayne-headless would not	-	-
+2026-11-27	Prompt-only runs happen in an empty temp folder with no tools; --read DIR replaces --cwd	A batch item should not see or touch the repo	claude listed no files from the temp folder	One flag says what the model may see
+2026-11-27	claude gets --strict-mcp-config	--tools left claude.ai connectors (Drive, Notion) usable	scratchpad ro-claude answer	Only Read, Grep, Glob remain
+2026-11-27	grok --read uses plan mode, not dontAsk	dontAsk cancelled the whole turn when a write was denied	stopReason cancelled	Reads, answers, writes nothing in DIR
+2026-11-27	agy refuses --read	--sandbox and a settings deny rule both still let it create out.txt	scratchpad ro2/out.txt	agy is prompt-only, in an empty folder
+2026-11-27	Checkpoint: ask works on all four; batch resumes after Ctrl-C and retries an error row	Goal proof	scratchpad batch/out.jsonl, fail.jsonl	green
+2026-11-27	Keep the script reference as backticks plus (relative to this skill)	It matches wayne-store, wayne-idea and wayne-git; the user chose to keep it	user message	Text approved
