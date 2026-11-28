@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+import argparse
+import concurrent.futures
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import threading
+from dataclasses import dataclass
+from typing import Callable
+
+TIMEOUT_SECONDS = 900
+
+
+class CallFailed(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class Call:
+    argv: list[str]
+    stdin: str | None
+    read_answer: Callable[[str], str]
+
+
+def json_field(field: str, ok: Callable[[dict], bool]) -> Callable[[str], str]:
+    def read(stdout: str) -> str:
+        reply = json.loads(stdout)
+        if not ok(reply):
+            raise CallFailed(stdout.strip()[:2000])
+        return reply[field].strip()
+    return read
+
+
+def claude(prompt: str, model: str | None, read: bool, _scratch: str) -> Call:
+    argv = ["claude", "-p", "--output-format", "json", "--no-session-persistence",
+            "--strict-mcp-config", "--permission-mode", "dontAsk",
+            "--tools", "Read,Grep,Glob" if read else ""]
+    if model:
+        argv += ["--model", model]
+    return Call(argv, prompt, json_field("result", lambda r: not r.get("is_error")))
+
+
+def codex(prompt: str, model: str | None, read: bool, scratch: str) -> Call:
+    answer_file = os.path.join(scratch, "answer.txt")
+    argv = ["codex", "exec", "--skip-git-repo-check", "--ephemeral", "--color", "never",
+            "-s", "read-only", "-o", answer_file]
+    if model:
+        argv += ["-m", model]
+    argv.append("-")
+
+    def read_answer(_stdout: str) -> str:
+        with open(answer_file) as f:
+            return f.read().strip()
+    return Call(argv, prompt, read_answer)
+
+
+def grok(prompt: str, model: str | None, read: bool, scratch: str) -> Call:
+    prompt_file = os.path.join(scratch, "prompt.txt")
+    with open(prompt_file, "w") as f:
+        f.write(prompt)
+    argv = ["grok", "--prompt-file", prompt_file, "--output-format", "json",
+            "--no-memory", "--no-subagents"]
+    argv += ["--permission-mode", "plan"] if read else ["--tools", ""]
+    if model:
+        argv += ["-m", model]
+    return Call(argv, None, json_field("text", lambda r: r.get("stopReason") == "end_turn"))
+
+
+def agy(prompt: str, model: str | None, read: bool, _scratch: str) -> Call:
+    if read:
+        raise CallFailed("agy cannot be held read-only, so it does not take --read")
+    argv = ["agy", "--output-format", "json", "--sandbox"]
+    if model:
+        argv += ["--model", model]
+    argv.append("--print=" + prompt)
+    return Call(argv, None, json_field("response", lambda r: r.get("status") == "SUCCESS"))
+
+
+CLIS: dict[str, Callable[[str, str | None, bool, str], Call]] = {
+    "claude": claude, "codex": codex, "grok": grok, "agy": agy,
+}
+
+
+def ask(cli: str, prompt: str, model: str | None, read: str | None) -> str:
+    with tempfile.TemporaryDirectory(prefix="wayne-models-") as scratch:
+        call = CLIS[cli](prompt, model, read is not None, scratch)
+        cwd = read or scratch
+        try:
+            stdin = {"input": call.stdin} if call.stdin is not None else {"stdin": subprocess.DEVNULL}
+            done = subprocess.run(call.argv, capture_output=True, text=True, cwd=cwd,
+                                  timeout=TIMEOUT_SECONDS, **stdin)
+        except subprocess.TimeoutExpired:
+            raise CallFailed(f"{cli} gave no answer within {TIMEOUT_SECONDS}s")
+        if done.returncode != 0:
+            raise CallFailed(f"{cli} exited {done.returncode}: {(done.stderr or done.stdout).strip()[-2000:]}")
+        try:
+            return call.read_answer(done.stdout)
+        except (json.JSONDecodeError, KeyError, OSError) as e:
+            raise CallFailed(f"{cli} answer unreadable ({e}): {done.stdout.strip()[:2000]}")
+
+
+def cmd_list(_args) -> int:
+    for name in CLIS:
+        path = shutil.which(name)
+        print(f"{name}\t{path or 'missing'}")
+    return 0
+
+
+def cmd_ask(args) -> int:
+    prompt = sys.stdin.read()
+    if not prompt.strip():
+        print("models ask: the prompt is read from stdin and was empty", file=sys.stderr)
+        return 2
+    try:
+        print(ask(args.cli, prompt, args.model, args.read))
+    except CallFailed as e:
+        print(f"models ask: {e}", file=sys.stderr)
+        return 1
+    return 0
+
+
+def read_items(path: str) -> list[dict]:
+    items, seen = [], set()
+    with open(path) as f:
+        for n, line in enumerate(f, 1):
+            if not line.strip():
+                continue
+            item = json.loads(line)
+            if not isinstance(item, dict) or "id" not in item:
+                raise SystemExit(f"models batch: {path}:{n} is not a JSON object with an id")
+            if item["id"] in seen:
+                raise SystemExit(f"models batch: {path}:{n} repeats id {item['id']!r}")
+            seen.add(item["id"])
+            items.append(item)
+    return items
+
+
+def answered_ids(path: str) -> set:
+    latest = {}
+    if os.path.exists(path):
+        with open(path) as f:
+            for line in f:
+                if line.strip():
+                    row = json.loads(line)
+                    latest[row["id"]] = row
+    return {i for i, row in latest.items() if "answer" in row}
+
+
+def cmd_batch(args) -> int:
+    with open(args.prompt) as f:
+        template = f.read()
+    items = read_items(args.items)
+    done = answered_ids(args.out)
+    todo = [item for item in items if item["id"] not in done]
+    print(f"models batch: {len(done & {i['id'] for i in items})} already answered, {len(todo)} to run", file=sys.stderr)
+
+    lock = threading.Lock()
+    failures = 0
+
+    def run(item: dict) -> None:
+        nonlocal failures
+        prompt = f"{template.rstrip()}\n\n{json.dumps(item, ensure_ascii=False)}\n"
+        row = {"id": item["id"], "cli": args.cli, "model": args.model}
+        try:
+            row["answer"] = ask(args.cli, prompt, args.model, args.read)
+        except CallFailed as e:
+            row["error"] = str(e)
+        with lock:
+            with open(args.out, "a") as out:
+                out.write(json.dumps(row, ensure_ascii=False) + "\n")
+            if "error" in row:
+                failures += 1
+                print(f"models batch: {item['id']}: {row['error'][-300:]}", file=sys.stderr)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
+        list(pool.map(run, todo))
+    print(f"models batch: {len(todo) - failures} answered, {failures} failed; rerun to retry failures", file=sys.stderr)
+    return 1 if failures else 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(prog="models")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    sub.add_parser("list", help="which model CLIs are installed").set_defaults(run=cmd_list)
+
+    def common(p):
+        p.add_argument("cli", choices=CLIS)
+        p.add_argument("--model")
+        p.add_argument("--read", metavar="DIR", type=os.path.abspath,
+                       help="let the model read files in DIR; without it the model sees an empty folder")
+
+    p_ask = sub.add_parser("ask", help="one prompt from stdin, the answer on stdout")
+    common(p_ask)
+    p_ask.set_defaults(run=cmd_ask)
+
+    p_batch = sub.add_parser("batch", help="one prompt over every item of a JSONL file")
+    common(p_batch)
+    p_batch.add_argument("--prompt", required=True, help="file with the fixed prompt")
+    p_batch.add_argument("--items", required=True, help="JSONL, one object with an id per line")
+    p_batch.add_argument("--out", required=True, help="JSONL of answers, appended; rerun resumes")
+    p_batch.add_argument("-j", "--jobs", type=int, default=4)
+    p_batch.set_defaults(run=cmd_batch)
+
+    args = parser.parse_args()
+    return args.run(args)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("models: interrupted; a rerun of the same batch resumes", file=sys.stderr)
+        sys.exit(130)
